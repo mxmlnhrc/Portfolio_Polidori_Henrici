@@ -1,7 +1,5 @@
 # Fahrplan: Projekt-Checkliste
 
-Diese Checkliste führt dich Schritt für Schritt durch die Implementierung deiner Portfolio-Management-Anwendung. Jeder Abschnitt beginnt mit den Kernaufgaben und enthält grobe Leitgedanken, die während der Entwicklung noch detailliert ausgearbeitet werden können.
-
 ## 1. Exceptions & Utilities
 
 *Grundlagen für sauberes Fehler-Handling und Eingabevalidierung schaffen.*
