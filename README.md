@@ -43,6 +43,7 @@ src/
 │  ├─ EmptyNameException.java
 │  ├─ DuplicatedNameException.java
 │  ├─ InvalidGradeException.java
+   ├─ ValidationException.java  // Exception für Validierungsfehler
 │  └─ InvalidDateException.java
 │
 ├─ ui/
@@ -55,9 +56,9 @@ src/
 │     └─ PasswordDeletionPolicy.java // implementiert DeletionPolicy für Passwortprüfung
 │
 └─ util/
-   ├─ Validator.java      // Interface für Eingabevalidierung
-   ├─ DateValidator.java  // implementiert Validator<String>
-   └─ GradeValidator.java // implementiert Validator<Double>
+   ├─ Validator.java            // Interface für Eingabevalidierung
+   ├─ DateValidator.java        // implementiert Validator<String>
+   └─ GradeValidator.java       // implementiert Validator<Double>
 ````
 
 ## Klassen & Interfaces
