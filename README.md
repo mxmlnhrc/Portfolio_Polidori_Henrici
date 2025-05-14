@@ -31,11 +31,13 @@ src/
 │  └─ Projekt.java        // referenziert Liste<Student>, Note, Abgabedatum
 │
 ├─ datastructure/
-│  └─ EigeneListe.java    // z. B. einfach verkettete Liste oder Baum
+│  ├─ EigeneListe.java    // Interface für Liste-Implementierungen
+│  └─ SimpleLinkedList.java // konkrete Implementierung (einfache verkettete Liste)
 │
 ├─ algorithm/
-│  ├─ MergeSort.java      // Divide-and‐Conquer
-│  └─ HeapSort.java       // Selection‐Kategorie
+│  ├─ SortAlgorithm.java  // Interface für Sortierstrategien
+│  ├─ MergeSort.java      // Divide-and‐Conquer, implementiert SortAlgorithm
+│  └─ HeapSort.java       // Selection‐Kategorie, implementiert SortAlgorithm
 │
 ├─ exception/
 │  ├─ EmptyNameException.java
@@ -47,9 +49,15 @@ src/
 │  ├─ MainFrame.java      // Startet die GUI
 │  ├─ AddDialog.java      // Maske zum Hinzufügen
 │  ├─ ListPanel.java      // Anzeige & Sortierung
-│  └─ PasswordDialog.java // Löschen mit Passwort
+│  ├─ PasswordDialog.java // Löschen mit Passwort
+│  └─ policy/
+│     ├─ DeletionPolicy.java        // Interface für Löschregeln
+│     └─ PasswordDeletionPolicy.java // implementiert DeletionPolicy für Passwortprüfung
+│
 └─ util/
-└─ DateValidator.java  // Prüfungen für Datum
+   ├─ Validator.java      // Interface für Eingabevalidierung
+   ├─ DateValidator.java  // implementiert Validator<String>
+   └─ GradeValidator.java // implementiert Validator<Double>
 ````
 
 ## Klassen & Interfaces
