@@ -95,7 +95,8 @@ public class AddDialog extends JDialog {
             projectList.add(projekt);
             confirmed = true;
             dispose();
-        } catch (EmptyNameException | ValidationException ex) {
+        } catch (ValidationException ex) {
+            // EmptyNameException ist eine Unterklasse von ValidationException
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Eingabefehler", JOptionPane.ERROR_MESSAGE);
         }
     }
