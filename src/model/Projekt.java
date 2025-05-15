@@ -11,6 +11,8 @@ import datastructure.SimpleLinkedList;
 
 /**
  * Repräsentiert ein Projekt mit Titel, Teilnehmern, Note und Abgabedatum.
+ * Erlaubt sowohl vollständige Initialisierung über Konstruktor als auch
+ * leere Erstellung und anschließendes Setzen der Attribute.
  */
 public class Projekt {
     private String titel;
@@ -22,7 +24,14 @@ public class Projekt {
     private final Validator<Double> gradeValidator = new GradeValidator();
 
     /**
-     * Konstruktor.
+     * Standard-Konstruktor für leere Projekterstellung.
+     */
+    public Projekt() {
+        this.teilnehmer = new SimpleLinkedList<>();
+    }
+
+    /**
+     * Vollständiger Konstruktor.
      * @param titel        Projekttitel (nicht leer)
      * @param note         Note (0.0 bis 100.0)
      * @param abgabeDatum  Abgabedatum im Format yyyyMMdd
@@ -30,10 +39,10 @@ public class Projekt {
      * @throws ValidationException      bei ungültiger Note oder Datum
      */
     public Projekt(String titel, double note, String abgabeDatum) throws EmptyNameException, ValidationException {
+        this();
         setTitel(titel);
         setNote(note);
         setAbgabeDatum(abgabeDatum);
-        this.teilnehmer = new SimpleLinkedList<>();
     }
 
     public String getTitel() {
