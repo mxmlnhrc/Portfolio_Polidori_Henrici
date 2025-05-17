@@ -44,7 +44,7 @@
 ---
 
 ### **3. Passwortabfrage vor Löschen**
-* [ ] **Passwortabfrage vor dem Löschen eines Projekts aus der DetailedView**
+* [x] **Passwortabfrage vor dem Löschen eines Projekts aus der DetailedView**
 
     * Wenn ein Projekt über den DetailDialog gelöscht wird, muss eine Passwortabfrage erfolgen
     Vor dem eigentlichen Löschen wird ein Passwortdialog geöffnet (PasswordDialog oder ähnliches, wie du ihn auch beim anderen Löschen verwendest).
