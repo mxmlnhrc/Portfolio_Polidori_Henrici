@@ -78,7 +78,7 @@ public class ListPanel extends JPanel {
         sortPanel.add(sortDesc);
 
         sortAsc.addActionListener(e -> sort(true));
-        sortAsc.addActionListener(e -> sort(false));
+        sortDesc.addActionListener(e -> sort(false));
 
         add(sortPanel, BorderLayout.NORTH);
 
@@ -120,14 +120,14 @@ public class ListPanel extends JPanel {
         }
         if (!ascending) comp = comp.reversed();
 
-        // Projekte aus Tree in List holen
+        // Projekte aus Baum in List sammeln
         List<model.Projekt> all = new ArrayList<>();
         for (model.Projekt p : projects) all.add(p);
 
-        // Sortieren mit dem aktuellen Algorithmus
+        // Hier NUR eigenen Algorithmus nutzen!
         currentSort.sort(all, comp);
 
-        // Tabelle neu befüllen
+        // Tabelle neu füllen
         tableModel.setRowCount(0);
         for (model.Projekt p : all) {
             StringBuilder studenten = new StringBuilder();
