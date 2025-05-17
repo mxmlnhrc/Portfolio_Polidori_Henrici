@@ -35,7 +35,9 @@ public class ListPanel extends JPanel {
 
     // Filterfelder anlegen
     private final JTextField gradeSearchField = new JTextField(5);
-    private final JButton gradeSearchBtn = new JButton("Suche Note");
+    private final JButton gradeSearchBtn = new JButton("Suchen");
+    private final JComboBox<String> filterCombo;
+    private String filterCriteria = "exakt";
 
     /**
      * Konstruktor für das ListPanel.
@@ -56,7 +58,11 @@ public class ListPanel extends JPanel {
         };
         this.table = new JTable(tableModel);
 
+        // Auswahl Sortierkriterien
         this.sortCombo = new JComboBox<>(new String[]{"Titel","Note","Abgabedatum"});
+
+        // Auswahl Filterkriterien
+        this.filterCombo = new JComboBox<>(new String[]{"Exakt","Mindestens","Maximal"});
         initUI();
         refresh();
     }
@@ -90,7 +96,7 @@ public class ListPanel extends JPanel {
        sortAsc.addActionListener(e -> sort(true));
        sortDesc.addActionListener(e -> sort(false));
 
-       // topPanel erstellen um Such- und Sortier- und Filterfelder zu kombinieren
+       // topPanel erstellen um Such- und Sortier-, Filter- und Suchfelder zu kombinieren
        JPanel topPanel = new JPanel();
        topPanel.setLayout(new BorderLayout());
        topPanel.add(sortPanel, BorderLayout.NORTH);
@@ -103,22 +109,39 @@ public class ListPanel extends JPanel {
        searchPanel.add(resetBtn);
 
        // Hinzufügen der Such-Buttons
-       topPanel.add(searchPanel, BorderLayout.SOUTH);
+       topPanel.add(searchPanel, BorderLayout.CENTER);
 
         // Filterfeld für Note
         JPanel gradeSearchPanel = new JPanel();
         gradeSearchPanel.add(new JLabel("Suche nach Note:"));
         gradeSearchPanel.add(gradeSearchField);
+        gradeSearchPanel.add(filterCombo);
         gradeSearchPanel.add(gradeSearchBtn);
 
+        // Filter-Dropdown für Note
+        filterCombo.addActionListener(e -> {
+            String selected = (String) filterCombo.getSelectedItem();
+            if ("Exakt".equals(selected)) {
+                filterCriteria = "exakt";
+            } else if ("Mindestens".equals(selected)) {
+                filterCriteria = "min";
+            } else {
+                filterCriteria = "max";
+            }
+        });
+
         // Einfügen der Notenfilterung unter der Tabelle
-        add(gradeSearchPanel, BorderLayout.SOUTH);
+        topPanel.add(gradeSearchPanel, BorderLayout.SOUTH);
 
 
         // ActionListener für die Such-Buttons
         searchBtn.addActionListener(e -> performSearch());
         resetBtn.addActionListener(e -> resetSearch());
         searchField.addActionListener(e -> performSearch()); // Enter im Feld
+
+        // ActionListener für den Noten-Filter
+        gradeSearchBtn.addActionListener(e -> performGradeSearch());
+        gradeSearchField.addActionListener(e -> performGradeSearch()); // Enter
 
         add(topPanel, BorderLayout.NORTH);
 
