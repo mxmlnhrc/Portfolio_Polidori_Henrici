@@ -76,7 +76,9 @@ public class EditDialog extends JDialog {
 
         // Studentenliste anzeigen
         gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
-        panel.add(new JScrollPane(studentListView), gbc);
+        JScrollPane studentScroll = new JScrollPane(studentListView);
+        studentScroll.setPreferredSize(new Dimension(220, 80)); // z.B. 220px Breite, 80px Höhe
+        panel.add(studentScroll, gbc);
 
         // Listener für den Button
         addStudentBtn.addActionListener(e -> onAddStudent());

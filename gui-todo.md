@@ -10,7 +10,7 @@ Diese Liste arbeiten wir Schritt für Schritt ab und können sie jederzeit ergä
     * [x] 2.1 Projekttitel, Note, Abgabedatum ändern
     * [x] 2.2 Studenten hinzufügen
     * [x] 2.3 Studenten löschen
-    * [ ] 2.4 Studenten bearbeiten (Name ändern)
+    * [x] 2.4 Studenten bearbeiten (Name ändern)
 * [ ] 3\. Oberfläche/Workflow: Bearbeiten-Button & Auswahl
 * [ ] 4\. Validierungen & UX-Feinschliff beim Editieren
 
