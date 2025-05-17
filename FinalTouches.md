@@ -23,7 +23,7 @@
 
     * Wenn die Note außerhalb des zulässigen Bereichs liegt (z. B. <0 oder >100, je nach Regel), `InvalidGradeException` werfen.
 
-* [ ] **Ungültiges Geburtsdatum:**
+* [x] **Ungültiges Geburtsdatum:**
 
     * Beim Hinzufügen eines Studenten: Falls das Datum nicht interpretierbar ist oder in der Zukunft liegt, `InvalidDateException` werfen.
 
