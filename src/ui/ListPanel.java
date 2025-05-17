@@ -3,6 +3,7 @@ package ui;
 import model.Projekt;
 import datastructure.EigeneListe;
 import algorithm.SortAlgorithm;
+import model.Student;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,7 +29,8 @@ public class ListPanel extends JPanel {
         this.projects = projects;
         this.mergeSort = mergeSort;
         this.heapSort = heapSort;
-        this.tableModel = new DefaultTableModel(new String[]{"Titel","Note","Abgabedatum"}, 0) {
+        this.tableModel = new DefaultTableModel(
+                new String[]{"Titel","Note","Abgabedatum","Studenten"}, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -90,7 +92,14 @@ public class ListPanel extends JPanel {
     public void refresh() {
         tableModel.setRowCount(0);
         for (Projekt p : projects) {
-            tableModel.addRow(new Object[]{p.getTitel(), p.getNote(), p.getAbgabeDatum()});
+            StringBuilder studenten = new StringBuilder();
+            for (Student s : p.getTeilnehmer()) {
+                if (!studenten.isEmpty()) studenten.append(", ");
+                studenten.append(s.getName());
+            }
+            tableModel.addRow(new Object[]{
+                    p.getTitel(), p.getNote(), p.getAbgabeDatum(), studenten.toString()
+            });
         }
     }
 
