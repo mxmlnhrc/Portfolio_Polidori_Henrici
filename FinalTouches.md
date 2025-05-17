@@ -4,7 +4,7 @@
 
 ### **1. Exception-Handling (Validierung & Eindeutigkeitsprüfungen)**
 
-* [ ] **Projekttitel-Eindeutigkeit:**
+* [x] **Projekttitel-Eindeutigkeit:**
 
     * Beim Erstellen eines neuen Projekts prüfen, ob der Titel (außer bei leeren Projekten) bereits in der Projektliste existiert.
     * Falls ja, `DuplicateNameException` werfen.
@@ -43,7 +43,17 @@
 
 ---
 
-### **3. (Optional) Weiteres oder künftige Ergänzungen**
+### **3. Passwortabfrage vor Löschen**
+* [ ] **Passwortabfrage vor dem Löschen eines Projekts aus der DetailedView**
+
+    * Wenn ein Projekt über den DetailDialog gelöscht wird, muss eine Passwortabfrage erfolgen
+    Vor dem eigentlichen Löschen wird ein Passwortdialog geöffnet (PasswordDialog oder ähnliches, wie du ihn auch beim anderen Löschen verwendest).
+    Nur wenn das richtige Passwort eingegeben wird, wird das Projekt tatsächlich gelöscht.
+    Bei falschem Passwort oder Abbruch: Projekt bleibt erhalten, keine weitere Aktion.
+
+---
+
+### **4. (Optional) Weiteres oder künftige Ergänzungen**
 
 * [ ] Diese Liste kann jederzeit um weitere Validierungen, Features oder Refactorings erweitert werden!
 
