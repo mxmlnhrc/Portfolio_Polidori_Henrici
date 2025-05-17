@@ -1,7 +1,7 @@
 package model;
 
 import exception.EmptyNameException;
-import java.time.LocalDate;
+
 import java.util.Objects;
 
 /**
@@ -18,7 +18,7 @@ public class Student extends Mensch {
      * @throws EmptyNameException wenn der Name leer ist
      * @throws IllegalArgumentException wenn die Matrikelnummer ungültig ist
      */
-    public Student(String name, LocalDate birthDate, String matrikelnummer) throws EmptyNameException {
+    public Student(String name, String birthDate, String matrikelnummer) throws EmptyNameException {
         super(name, birthDate);
         setMatrikelnummer(matrikelnummer);
     }

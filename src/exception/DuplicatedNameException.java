@@ -4,6 +4,6 @@ package exception;
 
 public class DuplicatedNameException extends ValidationException {
     public DuplicatedNameException(String name) {
-        super("Name schon vorhanden: " + name);
+        super("Name ist schon vorhanden: " + name);
     }
 }

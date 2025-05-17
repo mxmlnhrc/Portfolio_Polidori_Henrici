@@ -1,6 +1,12 @@
 package model;
 
 import exception.EmptyNameException;
+import exception.InvalidDateException;
+import exception.ValidationException;
+import util.DateValidator;
+import util.Validator;
+
+
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,7 +15,8 @@ import java.util.Objects;
  */
 public class Mensch {
     private String name;
-    private final LocalDate birthDate;
+    private final String birthDate;
+    private final Validator<String> dateValidator = new DateValidator();
 
     /**
      * Konstruktor.
@@ -17,11 +24,17 @@ public class Mensch {
      * @param birthDate   Geburtsdatum (nicht null)
      * @throws EmptyNameException wenn der Name leer ist
      */
-    public Mensch(String name, LocalDate birthDate) throws EmptyNameException {
+    public Mensch(String name, String birthDate) throws EmptyNameException {
         setName(name);
         if (birthDate == null) {
             throw new IllegalArgumentException("Geburtsdatum darf nicht null sein");
         }
+        try {
+            dateValidator.validate(birthDate);
+        } catch (ValidationException e) {
+            throw new RuntimeException(e);
+        }
+
         this.birthDate = birthDate;
     }
 
@@ -38,10 +51,11 @@ public class Mensch {
         if (name == null || name.trim().isEmpty()) {
             throw new EmptyNameException();
         }
+
         this.name = name.trim();
     }
 
-    public LocalDate getBirthDate() {
+    public String getBirthDate() {
         return birthDate;
     }
 

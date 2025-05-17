@@ -352,7 +352,7 @@ public class ListPanel extends JPanel {
     private void showDetailsDialog(Projekt projekt) {
         DetailsDialog dialog = new DetailsDialog(
                 SwingUtilities.getWindowAncestor(this), projekt,
-                p -> { projects.remove(p); refresh(); }
+                p -> { projects.remove(p); refresh(); }, projects
         );
         dialog.setVisible(true);
         // Prüfen, ob geändert wurde und dann refresh()
