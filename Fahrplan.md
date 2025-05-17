@@ -93,7 +93,7 @@
 * MVC-Pattern oder MVP für klare Trennung GUI/Logik
 * Demo-Daten einfügen, um UI-Tests zu erleichtern
 
-## 7. Tests & Dokumentation
+## 7. Dokumentation
 
 *Sorge für Qualitätssicherung und Laufzeit-Informationen.*
 
