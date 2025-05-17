@@ -29,33 +29,13 @@
 
 ---
 
-### **2. Filter-Logik auslagern**
-
-* [ ] **Neue Klasse (z. B. `ProjektFilterUtil`) für alle Filtermethoden**
-
-    * Die Filter für Projekttitel, Note (exakt, min, max) und andere Kriterien werden in eine eigene Klasse ausgelagert.
-    * Die ListView ruft für die jeweilige Filteraktion nur noch die passenden Methoden der Hilfsklasse auf.
-    * Vorteile:
-
-        * Übersichtlicherer Code
-        * Bessere Testbarkeit
-        * Erweiterbar für zukünftige Filter
-
----
-
-### **3. Passwortabfrage vor Löschen**
+### **2. Passwortabfrage vor Löschen**
 * [x] **Passwortabfrage vor dem Löschen eines Projekts aus der DetailedView**
 
     * Wenn ein Projekt über den DetailDialog gelöscht wird, muss eine Passwortabfrage erfolgen
     Vor dem eigentlichen Löschen wird ein Passwortdialog geöffnet (PasswordDialog oder ähnliches, wie du ihn auch beim anderen Löschen verwendest).
     Nur wenn das richtige Passwort eingegeben wird, wird das Projekt tatsächlich gelöscht.
     Bei falschem Passwort oder Abbruch: Projekt bleibt erhalten, keine weitere Aktion.
-
----
-
-### **4. (Optional) Weiteres oder künftige Ergänzungen**
-
-* [ ] Diese Liste kann jederzeit um weitere Validierungen, Features oder Refactorings erweitert werden!
 
 ---
 
