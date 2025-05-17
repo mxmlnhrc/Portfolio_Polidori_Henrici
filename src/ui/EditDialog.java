@@ -75,6 +75,13 @@ public class EditDialog extends JDialog {
         // Listener für den Button
         addStudentBtn.addActionListener(e -> onAddStudent());
 
+        //Studenten entfernen
+        JButton removeStudentBtn = new JButton("Student entfernen");
+        gbc.gridx = 0; gbc.gridy = 9; gbc.gridwidth = 2;
+        panel.add(removeStudentBtn, gbc);
+
+        removeStudentBtn.addActionListener(e -> onRemoveStudent());
+
         // GUI aufbauen
         gbc.gridx = 0; gbc.gridy = 0; panel.add(new JLabel("Titel:"), gbc);
         gbc.gridx = 1; panel.add(titelField, gbc);
@@ -99,6 +106,32 @@ public class EditDialog extends JDialog {
 
         okButton.addActionListener(e -> onOk());
         cancelButton.addActionListener(e -> onCancel());
+    }
+
+    /**
+     * Entfernt den ausgewählten Studenten aus dem Projekt.
+     */
+    private void onRemoveStudent() {
+        int selectedIndex = studentListView.getSelectedIndex();
+        if (selectedIndex < 0) {
+            JOptionPane.showMessageDialog(this, "Kein Student ausgewählt!");
+            return;
+        }
+        String selectedValue = studentListModel.getElementAt(selectedIndex);
+        // Extrahiere Matrikelnummer aus Anzeige: "Name (Matrikelnummer)"
+        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
+
+        Student toRemove = null;
+        for (Student s : projekt.getTeilnehmer()) {
+            if (s.getMatrikelnummer().equals(mat)) {
+                toRemove = s;
+                break;
+            }
+        }
+        if (toRemove != null) {
+            projekt.removeStudent(toRemove);
+            updateStudentListModel();
+        }
     }
 
     /**
