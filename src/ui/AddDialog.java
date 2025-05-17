@@ -80,6 +80,14 @@ public class AddDialog extends JDialog {
         gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
         panel.add(new JScrollPane(studentListView), gbc);
 
+        // Separator
+        gbc.gridx = 0;
+        gbc.gridy = 3; // oder die nächste freie Zeile nach dem letzten Projektfeld!
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JSeparator(), gbc);
+        gbc.fill = GridBagConstraints.NONE; // Zurücksetzen!
+
         // Buttons
         JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("OK");

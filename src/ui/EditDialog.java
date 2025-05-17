@@ -111,6 +111,14 @@ public class EditDialog extends JDialog {
         gbc.gridx = 0; gbc.gridy = 2; panel.add(new JLabel("Abgabedatum (yyyyMMdd):"), gbc);
         gbc.gridx = 1; panel.add(datumField, gbc);
 
+        // Separator zwischen Projekt- und Studentenfeldern
+        gbc.gridx = 0;
+        gbc.gridy = 3; // oder die nächste freie Zeile nach dem letzten Projektfeld!
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JSeparator(), gbc);
+        gbc.fill = GridBagConstraints.NONE; // Zurücksetzen!
+
         // Buttons
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         JButton okButton = new JButton("OK");
