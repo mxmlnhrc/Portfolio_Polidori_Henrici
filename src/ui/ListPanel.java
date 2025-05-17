@@ -28,12 +28,15 @@ public class ListPanel extends JPanel {
     private final algorithm.SortAlgorithm<model.Projekt> heapSort = new algorithm.HeapSort<>();
     private algorithm.SortAlgorithm<model.Projekt> currentSort = mergeSort; // Standard
 
+    // Filterfelder anlegen
+    private final JTextField searchField = new JTextField(14);
+    private final JButton searchBtn = new JButton("Suchen");
+    private final JButton resetBtn = new JButton("Zurücksetzen");
+
     public ListPanel(EigeneListe<Projekt> projects,
                      SortAlgorithm<Projekt> mergeSort,
                      SortAlgorithm<Projekt> heapSort) {
         this.projects = projects;
-//        this.mergeSort = mergeSort;
-//        this.heapSort = heapSort;
         this.tableModel = new DefaultTableModel(
                 new String[]{"Titel","Note","Abgabedatum","Studenten"}, 0) {
             @Override
@@ -42,7 +45,6 @@ public class ListPanel extends JPanel {
             }
         };
         this.table = new JTable(tableModel);
-
 
         this.sortCombo = new JComboBox<>(new String[]{"Titel","Note","Abgabedatum"});
         initUI();
@@ -55,11 +57,8 @@ public class ListPanel extends JPanel {
 
         JPanel control = new JPanel();
         control.add(new JLabel("Sortieren nach:"));
-//        control.add(sortCombo);
         JButton sortAsc = new JButton("Aufsteigend");
         JButton sortDesc = new JButton("Absteigend");
-//        control.add(sortAsc);
-//        control.add(sortDesc);
         add(control, BorderLayout.NORTH);
 
         // Auswahl der Sortieralgorithmen
@@ -69,18 +68,36 @@ public class ListPanel extends JPanel {
             else currentSort = heapSort;
         });
 
-        JPanel sortPanel = new JPanel();
-        sortPanel.add(new JLabel("Algorithmus:"));
-        sortPanel.add(algoCombo);
-        sortPanel.add(new JLabel("Kriterium:"));
-        sortPanel.add(sortCombo);
-        sortPanel.add(sortAsc);
-        sortPanel.add(sortDesc);
+       JPanel sortPanel = new JPanel();
+       sortPanel.add(new JLabel("Algorithmus:"));
+       sortPanel.add(algoCombo);
+       sortPanel.add(new JLabel("Kriterium:"));
+       sortPanel.add(sortCombo);
+       sortPanel.add(sortAsc);
+       sortPanel.add(sortDesc);
 
-        sortAsc.addActionListener(e -> sort(true));
-        sortDesc.addActionListener(e -> sort(false));
+       sortAsc.addActionListener(e -> sort(true));
+       sortDesc.addActionListener(e -> sort(false));
 
-        add(sortPanel, BorderLayout.NORTH);
+       JPanel topPanel = new JPanel();
+       topPanel.setLayout(new BorderLayout());
+       topPanel.add(sortPanel, BorderLayout.NORTH);
+
+       // Filterfeld und Buttons
+       JPanel searchPanel = new JPanel();
+       searchPanel.add(new JLabel("Suche Projekt:"));
+       searchPanel.add(searchField);
+       searchPanel.add(searchBtn);
+       searchPanel.add(resetBtn);
+       // Hinzufügen der Filter-Buttons
+       topPanel.add(searchPanel, BorderLayout.SOUTH);
+
+        // ActionListener für die Filter-Buttons
+        searchBtn.addActionListener(e -> performSearch());
+        resetBtn.addActionListener(e -> resetSearch());
+        searchField.addActionListener(e -> performSearch()); // Enter im Feld
+
+        add(topPanel, BorderLayout.NORTH);
 
         /**
          * MouseListener für Doppelklick auf die Tabelle
@@ -101,6 +118,41 @@ public class ListPanel extends JPanel {
         });
     }
 
+    /**
+     * Zeigt nur Projekte, deren Titel den Suchbegriff enthalten.
+     * (Case-Insensitive)
+     */
+    private void performSearch() {
+        String term = searchField.getText().trim().toLowerCase();
+        tableModel.setRowCount(0); // Tabelle leeren
+        for (model.Projekt p : projects) {
+            String titel = p.getTitel() != null ? p.getTitel().toLowerCase() : "";
+            if (titel.contains(term)) {
+                StringBuilder studenten = new StringBuilder();
+                for (model.Student s : p.getTeilnehmer()) {
+                    if (studenten.length() > 0) studenten.append(", ");
+                    studenten.append(s.getName());
+                }
+                tableModel.addRow(new Object[]{
+                        p.getTitel(), p.getNote(), p.getAbgabeDatum(), studenten.toString()
+                });
+            }
+        }
+    }
+
+    /**
+     * Setzt die Filter zurück und zeigt alle Projekte an.
+     */
+    private void resetSearch() {
+        searchField.setText("");
+        refresh(); // Zeigt wieder alle Projekte an
+    }
+
+
+    /**
+     * Sortiert die Projekte in aufsteigender oder absteigender Reihenfolge.
+     * @param ascending true für aufsteigend, false für absteigend
+     */
     private void sort(boolean ascending) {
         String criteria = (String) sortCombo.getSelectedItem();
         Comparator<model.Projekt> comp;
