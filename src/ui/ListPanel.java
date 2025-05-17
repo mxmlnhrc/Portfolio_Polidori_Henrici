@@ -4,8 +4,6 @@ import model.Projekt;
 import datastructure.EigeneListe;
 import algorithm.SortAlgorithm;
 import model.Student;
-import algorithm.HeapSort;
-import algorithm.MergeSort;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -28,11 +26,22 @@ public class ListPanel extends JPanel {
     private final algorithm.SortAlgorithm<model.Projekt> heapSort = new algorithm.HeapSort<>();
     private algorithm.SortAlgorithm<model.Projekt> currentSort = mergeSort; // Standard
 
-    // Filterfelder anlegen
+    // Suchfelder anlegen
     private final JTextField searchField = new JTextField(14);
     private final JButton searchBtn = new JButton("Suchen");
     private final JButton resetBtn = new JButton("Zurücksetzen");
 
+    // Filterfelder anlegen
+    private final JTextField gradeFilterField = new JTextField(5);
+    private final JButton gradeFilterBtn = new JButton("Filtern");
+    private final JComboBox<String> filterCombo;
+
+    /**
+     * Konstruktor für das ListPanel.
+     * @param projects - Liste der Projekte
+     * @param mergeSort - Sortieralgorithmus für MergeSort
+     * @param heapSort - Sortieralgorithmus für HeapSort
+     */
     public ListPanel(EigeneListe<Projekt> projects,
                      SortAlgorithm<Projekt> mergeSort,
                      SortAlgorithm<Projekt> heapSort) {
@@ -46,7 +55,11 @@ public class ListPanel extends JPanel {
         };
         this.table = new JTable(tableModel);
 
+        // Auswahl Sortierkriterien
         this.sortCombo = new JComboBox<>(new String[]{"Titel","Note","Abgabedatum"});
+
+        // Auswahl Filterkriterien
+        this.filterCombo = new JComboBox<>(new String[]{"Exakt","Mindestens","Maximal"});
         initUI();
         refresh();
     }
@@ -68,6 +81,7 @@ public class ListPanel extends JPanel {
             else currentSort = heapSort;
         });
 
+        // Auswahl der Sortierkriterien
        JPanel sortPanel = new JPanel();
        sortPanel.add(new JLabel("Algorithmus:"));
        sortPanel.add(algoCombo);
@@ -79,23 +93,40 @@ public class ListPanel extends JPanel {
        sortAsc.addActionListener(e -> sort(true));
        sortDesc.addActionListener(e -> sort(false));
 
+       // topPanel erstellen um Such- und Sortier-, Filter- und Suchfelder zu kombinieren
        JPanel topPanel = new JPanel();
        topPanel.setLayout(new BorderLayout());
        topPanel.add(sortPanel, BorderLayout.NORTH);
 
-       // Filterfeld und Buttons
+       // Suchfelder und Buttons
        JPanel searchPanel = new JPanel();
        searchPanel.add(new JLabel("Suche Projekt:"));
        searchPanel.add(searchField);
        searchPanel.add(searchBtn);
        searchPanel.add(resetBtn);
-       // Hinzufügen der Filter-Buttons
-       topPanel.add(searchPanel, BorderLayout.SOUTH);
 
-        // ActionListener für die Filter-Buttons
+       // Hinzufügen der Such-Buttons
+       topPanel.add(searchPanel, BorderLayout.CENTER);
+
+        // Filterfeld für Note
+        JPanel filterGradePanel = new JPanel();
+        filterGradePanel.add(new JLabel("Suche nach Note:"));
+        filterGradePanel.add(gradeFilterField);
+        filterGradePanel.add(filterCombo);
+        filterGradePanel.add(gradeFilterBtn);
+
+        // Einfügen der Notenfilterung unter der Tabelle
+        add(filterGradePanel, BorderLayout.SOUTH);
+
+
+        // ActionListener für die Such-Buttons
         searchBtn.addActionListener(e -> performSearch());
         resetBtn.addActionListener(e -> resetSearch());
         searchField.addActionListener(e -> performSearch()); // Enter im Feld
+
+        // ActionListener für den Noten-Filter
+        gradeFilterBtn.addActionListener(e -> filterByGrade());
+        gradeFilterField.addActionListener(e -> filterByGrade()); // Enter
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -117,6 +148,84 @@ public class ListPanel extends JPanel {
             }
         });
     }
+
+    /**
+     * Binäre Suche nach Projekten mit exakt passender Note.
+     * Die Liste muss vorher sortiert sein!
+     */
+    private void filterByGrade() {
+        String valText = gradeFilterField.getText().trim();
+        if (valText.isEmpty()) return;
+
+        double value;
+        try {
+            value = Double.parseDouble(valText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Ungültige Eingabe!");
+            return;
+        }
+
+        String criteria = (String) filterCombo.getSelectedItem();
+        tableModel.setRowCount(0);
+        List<model.Projekt> found = new ArrayList<>();
+
+        if ("Exakt".equals(criteria)) {
+            // Binäre Suche auf sortierter Liste
+            List<model.Projekt> all = new ArrayList<>();
+            for (model.Projekt p : projects) all.add(p);
+            // Sortiere nach Note
+            mergeSort.sort(all, Comparator.comparingDouble(model.Projekt::getNote));
+
+            // Binäre Suche nach passender Note (siehe vorherige Antwort)
+            int left = 0, right = all.size() - 1;
+            while (left <= right) {
+                int mid = (left + right) / 2;
+                double midNote = all.get(mid).getNote();
+                if (midNote == value) {
+                    int i = mid;
+                    while (i >= 0 && all.get(i).getNote() == value) {
+                        found.add(0, all.get(i));
+                        i--;
+                    }
+                    i = mid + 1;
+                    while (i < all.size() && all.get(i).getNote() == value) {
+                        found.add(all.get(i));
+                        i++;
+                    }
+                    break;
+                } else if (midNote < value) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+        } else if ("Mindestens".equals(criteria)) {
+            for (model.Projekt p : projects) {
+                if (p.getNote() >= value) found.add(p);
+            }
+        } else if ("Maximal".equals(criteria)) {
+            for (model.Projekt p : projects) {
+                if (p.getNote() <= value) found.add(p);
+            }
+        }
+
+        // Tabelle befüllen
+        for (model.Projekt p : found) {
+            StringBuilder studenten = new StringBuilder();
+            for (model.Student s : p.getTeilnehmer()) {
+                if (studenten.length() > 0) studenten.append(", ");
+                studenten.append(s.getName());
+            }
+            tableModel.addRow(new Object[]{
+                    p.getTitel(), p.getNote(), p.getAbgabeDatum(), studenten.toString()
+            });
+        }
+
+        if (found.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Kein passendes Projekt gefunden!");
+        }
+    }
+
 
     /**
      * Zeigt nur Projekte, deren Titel den Suchbegriff enthalten.
@@ -141,7 +250,7 @@ public class ListPanel extends JPanel {
     }
 
     /**
-     * Setzt die Filter zurück und zeigt alle Projekte an.
+     * Setzt die Suche zurück und zeigt alle Projekte an.
      */
     private void resetSearch() {
         searchField.setText("");
