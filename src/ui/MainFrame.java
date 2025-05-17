@@ -166,7 +166,8 @@ public class MainFrame extends JFrame {
         // TODO: Dependency-Injection hier konfigurieren
         SwingUtilities.invokeLater(() -> {
             // Beispiel: Projektliste und Algorithmen erstellen
-            EigeneListe<Projekt> projects = new datastructure.BinarySearchTree<>(Comparator.comparing(Projekt::getTitel));
+            EigeneListe<Projekt> projects =
+                    new datastructure.BinarySearchTree<>(Comparator.comparing(Projekt::getProjektId));
             SortAlgorithm<Projekt> merge = new algorithm.MergeSort<>();
             SortAlgorithm<Projekt> heap = new algorithm.HeapSort<>();
             DeletionPolicy<Projekt> policy = new ui.policy.PasswordDeletionPolicy();

@@ -17,6 +17,7 @@ import java.util.Comparator;
  * leere Erstellung und anschließendes Setzen der Attribute.
  */
 public class Projekt {
+    private final String projektId;
     private String titel;
     private final BinarySearchTree<Student> teilnehmer;
     private double note;
@@ -29,6 +30,7 @@ public class Projekt {
      * Standard-Konstruktor für leere Projekterstellung.
      */
     public Projekt() {
+        this.projektId = java.util.UUID.randomUUID().toString();
         this.teilnehmer = new BinarySearchTree<Student>(Comparator.comparing(Student::getMatrikelnummer));
     }
 
@@ -47,6 +49,16 @@ public class Projekt {
         setAbgabeDatum(abgabeDatum);
     }
 
+    /**
+     * Getter für die Projekt-ID.
+     * @return Projekt-ID
+     */
+    public String getProjektId() { return projektId; }
+
+    /**
+     * Getter für den Projekttitel.
+     * @return Projekttitel
+     */
     public String getTitel() {
         return titel;
     }
