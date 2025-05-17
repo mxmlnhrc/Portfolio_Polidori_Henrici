@@ -125,14 +125,14 @@ public class AddDialog extends JDialog {
             for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
                 if (s.getMatrikelnummer().equals(matrikel)) {
                     throw new DuplicatedMatrikelnummerException(
-                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits im Projekt vergeben!");
+                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
                 }
             }
 
             for (Student s : tempStudents) {
                 if (s.getMatrikelnummer().equals(matrikel)) {
                     throw new DuplicatedMatrikelnummerException(
-                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits im Projekt vergeben!");
+                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
                 }
             }
 

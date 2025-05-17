@@ -1,9 +1,11 @@
 package ui;
 
 import datastructure.EigeneListe;
+import exception.DuplicatedMatrikelnummerException;
 import exception.DuplicatedNameException;
 import model.Projekt;
 import model.Student;
+import util.ProjektFilterUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -195,6 +197,7 @@ public class EditDialog extends JDialog {
             return;
         }
         String selectedValue = studentListModel.getElementAt(selectedIndex);
+
         // Extrahiere Matrikelnummer aus Anzeige: "Name (Matrikelnummer)"
         String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
 
@@ -225,6 +228,14 @@ public class EditDialog extends JDialog {
             }
             // Geburtsdatum parsen (Format yyyy-MM-dd)
             LocalDate date = LocalDate.parse(birth);
+
+            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
+            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
+                if (s.getMatrikelnummer().equals(matrikel)) {
+                    throw new DuplicatedMatrikelnummerException(
+                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
+                }
+            }
             Student s = new Student(name, date, matrikel);
 
             projekt.addStudent(s);
