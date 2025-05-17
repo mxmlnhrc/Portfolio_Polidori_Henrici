@@ -1,8 +1,11 @@
 package ui;
 
 import model.Projekt;
+import model.Student;
+
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 
 public class EditDialog extends JDialog {
     private boolean confirmed = false;
@@ -41,6 +44,37 @@ public class EditDialog extends JDialog {
         noteField.setText(String.valueOf(projekt.getNote()));
         datumField.setText(projekt.getAbgabeDatum() != null ? projekt.getAbgabeDatum() : "");
 
+        // --- Studentenbereich für Hinzufügen ---
+        // Felder mit leeren Werten initialisieren
+        studentNameField.setText("");
+        studentBirthField.setText("");
+        studentMatField.setText("");
+
+        // Anzeigen aller bereits zugeordneten Studenten
+        updateStudentListModel();
+
+        // Studentenfelder
+        gbc.gridx = 0; gbc.gridy = 4; gbc.gridwidth = 1;
+        panel.add(new JLabel("Student Name:"), gbc);
+        gbc.gridx = 1; panel.add(studentNameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 5; panel.add(new JLabel("Geburtsdatum (yyyy-MM-dd):"), gbc);
+        gbc.gridx = 1; panel.add(studentBirthField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 6; panel.add(new JLabel("Matrikelnummer:"), gbc);
+        gbc.gridx = 1; panel.add(studentMatField, gbc);
+
+        JButton addStudentBtn = new JButton("Student hinzufügen");
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
+        panel.add(addStudentBtn, gbc);
+
+        // Studentenliste anzeigen
+        gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
+        panel.add(new JScrollPane(studentListView), gbc);
+
+        // Listener für den Button
+        addStudentBtn.addActionListener(e -> onAddStudent());
+
         // GUI aufbauen
         gbc.gridx = 0; gbc.gridy = 0; panel.add(new JLabel("Titel:"), gbc);
         gbc.gridx = 1; panel.add(titelField, gbc);
@@ -66,6 +100,45 @@ public class EditDialog extends JDialog {
         okButton.addActionListener(e -> onOk());
         cancelButton.addActionListener(e -> onCancel());
     }
+
+    /**
+     * Fügt einen neuen Studenten zum Projekt hinzu, falls gültig.
+     * Wird durch Klick auf den Button ausgelöst.
+     */
+    private void onAddStudent() {
+        String name = studentNameField.getText().trim();
+        String birth = studentBirthField.getText().trim();
+        String matrikel = studentMatField.getText().trim();
+        try {
+            if (name.isEmpty() || birth.isEmpty() || matrikel.isEmpty()) {
+                throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
+            }
+            // Geburtsdatum parsen (Format yyyy-MM-dd)
+            LocalDate date = LocalDate.parse(birth);
+            Student s = new Student(name, date, matrikel);
+
+            projekt.addStudent(s);
+            updateStudentListModel();
+
+            // Eingabefelder leeren
+            studentNameField.setText("");
+            studentBirthField.setText("");
+            studentMatField.setText("");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Ungültige Eingabe: " + ex.getMessage());
+        }
+    }
+
+    /**
+     * Aktualisiert die JList, sodass alle aktuellen Studenten angezeigt werden.
+     */
+    private void updateStudentListModel() {
+        studentListModel.clear();
+        for (Student s : projekt.getTeilnehmer()) {
+            studentListModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")");
+        }
+    }
+
 
     private void onOk() {
         String titel = titelField.getText().trim();
