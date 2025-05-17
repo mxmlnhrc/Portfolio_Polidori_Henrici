@@ -4,10 +4,10 @@ Diese Liste arbeiten wir Schritt für Schritt ab und können sie jederzeit ergä
 
 ---
 
-* [ ] 1\. Leeres Projekt anlegen (ohne Attribute)
+* [x] 1\. Leeres Projekt anlegen (ohne Attribute)
 * [ ] 2\. Projekt bearbeiten (Dialog für Edit)
 
-    * [ ] 2.1 Projekttitel, Note, Abgabedatum ändern
+    * [x] 2.1 Projekttitel, Note, Abgabedatum ändern
     * [ ] 2.2 Studenten hinzufügen
     * [ ] 2.3 Studenten löschen
     * [ ] 2.4 Studenten bearbeiten (Name ändern)

@@ -75,6 +75,10 @@ public class MainFrame extends JFrame {
         emptyProjectItem.addActionListener(e -> createEmptyProject());
         menu.add(emptyProjectItem);
 
+        JMenuItem editItem = new JMenuItem("Bearbeiten");
+        editItem.addActionListener(e -> showEditDialog());
+        menu.add(editItem);
+
         JMenuItem deleteItem = new JMenuItem("Löschen");
         deleteItem.addActionListener(e -> showDeleteDialog());
         menu.add(deleteItem);
@@ -107,6 +111,23 @@ public class MainFrame extends JFrame {
             listPanel.refresh();
         }
     }
+
+    /**
+     * Zeigt das Dialogfenster zum Bearbeiten von Projekten an.
+     */
+    private void showEditDialog() {
+        Projekt selected = listPanel.getSelectedProjekt();
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, "Kein Projekt ausgewählt.", "Fehler", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        EditDialog dialog = new EditDialog(this, selected);
+        dialog.setVisible(true);
+        if (dialog.isConfirmed()) {
+            listPanel.refresh();
+        }
+    }
+
 
     /**
      * Zeigt den Passwortdialog vor dem Löschen an.
