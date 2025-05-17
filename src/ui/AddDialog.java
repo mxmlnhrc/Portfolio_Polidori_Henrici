@@ -4,16 +4,18 @@ import model.Projekt;
 import model.Student;
 import datastructure.EigeneListe;
 import datastructure.BinarySearchTree;
+import util.ProjektFilterUtil;
 import exception.EmptyNameException;
 import exception.ValidationException;
+import exception.DuplicatedNameException;
+import exception.DuplicatedMatrikelnummerException;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.Comparator;
-import exception.DuplicatedNameException;
-
 
 /**
  * Dialog zum Hinzufügen eines neuen Projekts mit beliebig vielen Studenten (per BinarySearchTree).
@@ -66,6 +68,15 @@ public class AddDialog extends JDialog {
         panel.add(new JLabel("Abgabedatum (yyyyMMdd):"), gbc);
         gbc.gridx = 1; panel.add(datumField, gbc);
 
+        // Separator
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JSeparator(), gbc);
+        gbc.fill = GridBagConstraints.NONE; // Zurücksetzen!
+        gbc.gridwidth = 1;
+
         // Studentenfelder
         gbc.gridx = 0; gbc.gridy = 4; panel.add(new JLabel("Student Name:"), gbc);
         gbc.gridx = 1; panel.add(studentNameField, gbc);
@@ -80,15 +91,9 @@ public class AddDialog extends JDialog {
         gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; panel.add(addStudentBtn, gbc);
 
         gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
-        panel.add(new JScrollPane(studentListView), gbc);
-
-        // Separator
-        gbc.gridx = 0;
-        gbc.gridy = 3; // oder die nächste freie Zeile nach dem letzten Projektfeld!
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        panel.add(new JSeparator(), gbc);
-        gbc.fill = GridBagConstraints.NONE; // Zurücksetzen!
+        JScrollPane studentScroll = new JScrollPane(studentListView);
+        studentScroll.setPreferredSize(new Dimension(220, 80));
+        panel.add(studentScroll, gbc);
 
         // Buttons
         JPanel buttonPanel = new JPanel();
@@ -102,12 +107,12 @@ public class AddDialog extends JDialog {
 
         getContentPane().add(panel, BorderLayout.CENTER);
 
-        addStudentBtn.addActionListener(e -> onAddStudent());
+        addStudentBtn.addActionListener(e -> onAddStudent(projectList));
         okButton.addActionListener((ActionEvent e) -> onOk(projectList));
         cancelButton.addActionListener((ActionEvent e) -> onCancel());
     }
 
-    private void onAddStudent() {
+    private void onAddStudent(EigeneListe<Projekt> projectList) {
         String name = studentNameField.getText().trim();
         String birth = studentBirthField.getText().trim();
         String matrikel = studentMatField.getText().trim();
@@ -115,11 +120,29 @@ public class AddDialog extends JDialog {
             if (name.isEmpty() || birth.isEmpty() || matrikel.isEmpty()) {
                 throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
             }
+
+            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
+            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
+                if (s.getMatrikelnummer().equals(matrikel)) {
+                    throw new DuplicatedMatrikelnummerException(
+                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits im Projekt vergeben!");
+                }
+            }
+
+            for (Student s : tempStudents) {
+                if (s.getMatrikelnummer().equals(matrikel)) {
+                    throw new DuplicatedMatrikelnummerException(
+                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits im Projekt vergeben!");
+                }
+            }
+
             LocalDate date = LocalDate.parse(birth); // Format yyyy-MM-dd
-            Student s = new Student(name, date, matrikel);
-            tempStudents.add(s);
+            Student student = new Student(name, date, matrikel);
+            tempStudents.add(student);
             studentListModel.addElement(name + " (" + matrikel + ")");
             studentNameField.setText(""); studentBirthField.setText(""); studentMatField.setText("");
+        } catch (DuplicatedMatrikelnummerException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Ungültige Eingabe: " + ex.getMessage());
         }
@@ -142,7 +165,7 @@ public class AddDialog extends JDialog {
                     JOptionPane.YES_NO_OPTION
             );
             if (response == JOptionPane.YES_OPTION) {
-                onAddStudent();
+                onAddStudent(projectList);
             }
         }
 
@@ -156,7 +179,7 @@ public class AddDialog extends JDialog {
             for (Projekt p : projectList) {
                 // Titel-Vergleich case-insensitive und keine leeren Titel prüfen
                 if (p.getTitel() != null && !p.getTitel().isEmpty() &&
-                    p.getTitel().equalsIgnoreCase(titel)) {
+                        p.getTitel().equalsIgnoreCase(titel)) {
                     throw new DuplicatedNameException("Der Projekttitel \"" + titel + "\" ist bereits vergeben!");
                 }
             }
@@ -179,6 +202,8 @@ public class AddDialog extends JDialog {
             dispose();
         } catch (DuplicatedNameException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
+        } catch (EmptyNameException ex) {
+            JOptionPane.showMessageDialog(this, "Projekttitel darf nicht leer sein!", "Fehler", JOptionPane.ERROR_MESSAGE);
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Eingabefehler", JOptionPane.ERROR_MESSAGE);
         }
