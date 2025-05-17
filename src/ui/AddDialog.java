@@ -3,6 +3,7 @@ package ui;
 import model.Projekt;
 import model.Student;
 import datastructure.EigeneListe;
+import datastructure.BinarySearchTree;
 import exception.EmptyNameException;
 import exception.ValidationException;
 
@@ -10,34 +11,27 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import datastructure.BinarySearchTree;
-import model.Student;
 import java.util.Comparator;
 
-
 /**
- * Dialog zum Hinzufügen eines neuen Projekts.
+ * Dialog zum Hinzufügen eines neuen Projekts mit beliebig vielen Studenten (per BinarySearchTree).
  */
 public class AddDialog extends JDialog {
     private boolean confirmed = false;
 
+    // Projektfelder
     private final JTextField titelField = new JTextField(20);
     private final JTextField noteField = new JTextField(5);
     private final JTextField datumField = new JTextField(10);
 
+    // Studentenfelder
     private final JTextField studentNameField = new JTextField(12);
     private final JTextField studentBirthField = new JTextField(10); // yyyy-MM-dd
     private final JTextField studentMatField = new JTextField(8);
-
     private final DefaultListModel<String> studentListModel = new DefaultListModel<>();
     private final JList<String> studentListView = new JList<>(studentListModel);
-
-    // Temporäre Speicherung: Alle Studenten, sortiert nach Matrikelnummer!
     private final BinarySearchTree<Student> tempStudents =
             new BinarySearchTree<>(Comparator.comparing(Student::getMatrikelnummer));
-
 
     /**
      * Konstruktor.
@@ -57,41 +51,20 @@ public class AddDialog extends JDialog {
         gbc.insets = new Insets(5,5,5,5);
         gbc.anchor = GridBagConstraints.WEST;
 
-        // Titel
+        // Projektdaten
         gbc.gridx = 0; gbc.gridy = 0;
         panel.add(new JLabel("Titel:"), gbc);
-        gbc.gridx = 1;
-        panel.add(titelField, gbc);
+        gbc.gridx = 1; panel.add(titelField, gbc);
 
-        // Note
         gbc.gridx = 0; gbc.gridy = 1;
         panel.add(new JLabel("Note (0-100):"), gbc);
-        gbc.gridx = 1;
-        panel.add(noteField, gbc);
+        gbc.gridx = 1; panel.add(noteField, gbc);
 
-        // Abgabedatum
         gbc.gridx = 0; gbc.gridy = 2;
         panel.add(new JLabel("Abgabedatum (yyyyMMdd):"), gbc);
-        gbc.gridx = 1;
-        panel.add(datumField, gbc);
+        gbc.gridx = 1; panel.add(datumField, gbc);
 
-        // Buttons
-        JPanel buttonPanel = new JPanel();
-        JButton okButton = new JButton("OK");
-        JButton cancelButton = new JButton("Abbrechen");
-        buttonPanel.add(okButton);
-        buttonPanel.add(cancelButton);
-
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
-        panel.add(buttonPanel, gbc);
-
-        getContentPane().add(panel, BorderLayout.CENTER);
-
-        // Action listeners
-        okButton.addActionListener((ActionEvent e) -> onOk(projectList));
-        cancelButton.addActionListener((ActionEvent e) -> onCancel());
-
-        // Studentenfelder und Button
+        // Studentenfelder
         gbc.gridx = 0; gbc.gridy = 4; panel.add(new JLabel("Student Name:"), gbc);
         gbc.gridx = 1; panel.add(studentNameField, gbc);
 
@@ -104,12 +77,24 @@ public class AddDialog extends JDialog {
         JButton addStudentBtn = new JButton("Student hinzufügen");
         gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; panel.add(addStudentBtn, gbc);
 
-        // JList zur Anzeige hinzugefügter Studenten
         gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
         panel.add(new JScrollPane(studentListView), gbc);
 
-        addStudentBtn.addActionListener(e -> onAddStudent());
+        // Buttons
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Abbrechen");
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
 
+        gbc.gridx = 0; gbc.gridy = 9; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
+        panel.add(buttonPanel, gbc);
+
+        getContentPane().add(panel, BorderLayout.CENTER);
+
+        addStudentBtn.addActionListener(e -> onAddStudent());
+        okButton.addActionListener((ActionEvent e) -> onOk(projectList));
+        cancelButton.addActionListener((ActionEvent e) -> onCancel());
     }
 
     private void onAddStudent() {
@@ -144,13 +129,14 @@ public class AddDialog extends JDialog {
             } catch (NumberFormatException nfe) {
                 throw new ValidationException("Note muss eine Zahl sein: " + noteText);
             }
-            // Projekt-Konstruktor validiert Note und Datum
             Projekt projekt = new Projekt(titel, note, datumText);
+            for (Student s : tempStudents) {
+                projekt.addStudent(s);
+            }
             projectList.add(projekt);
             confirmed = true;
             dispose();
         } catch (ValidationException ex) {
-            // EmptyNameException ist eine Unterklasse von ValidationException
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Eingabefehler", JOptionPane.ERROR_MESSAGE);
         }
     }
