@@ -5,21 +5,24 @@ import model.Student;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.function.Consumer;
 
 public class DetailsDialog extends JDialog {
     private final Projekt projekt;
+    private final Consumer<Projekt> deleteCallback;
 
     /**
      * Zeigt die Projektdetails an (read-only Ansicht).
      * @param parent Übergeordnetes Fenster
      * @param projekt Das anzuzeigende Projekt
      */
-    public DetailsDialog(Window parent, Projekt projekt) {
+    public DetailsDialog(Window parent, Projekt projekt, Consumer<Projekt> deleteCallback) {
         super(parent, "Projekt-Details", ModalityType.APPLICATION_MODAL);
         this.projekt = projekt;
         initComponents();
         setSize(400, 350);
         setLocationRelativeTo(parent);
+        this.deleteCallback = deleteCallback;
     }
 
     private void initComponents() {
@@ -86,9 +89,10 @@ public class DetailsDialog extends JDialog {
             dispose();
         });
         deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this, "Projekt wirklich löschen?", "Löschen", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(
+                    this, "Projekt wirklich löschen?", "Löschen", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                // Projekt muss aus der Hauptliste entfernt werden! (siehe Hinweis unten)
+                if (deleteCallback != null) deleteCallback.accept(projekt);
                 dispose();
             }
         });

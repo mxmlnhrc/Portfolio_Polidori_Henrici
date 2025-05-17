@@ -143,9 +143,13 @@ public class ListPanel extends JPanel {
      * @param projekt das Projekt, dessen Details angezeigt werden sollen
      */
     private void showDetailsDialog(Projekt projekt) {
-        DetailsDialog dialog = new DetailsDialog(SwingUtilities.getWindowAncestor(this), projekt);
+        DetailsDialog dialog = new DetailsDialog(
+                SwingUtilities.getWindowAncestor(this), projekt,
+                p -> { // Das ist das Callback!
+                    projects.remove(p);
+                    refresh();
+                }
+        );
         dialog.setVisible(true);
-        // Optional: Nach dem Schließen neu laden, falls sich etwas geändert hat
-        refresh();
     }
 }
