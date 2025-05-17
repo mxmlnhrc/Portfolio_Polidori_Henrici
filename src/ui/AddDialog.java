@@ -12,6 +12,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.util.Comparator;
+import exception.DuplicatedNameException;
+
 
 /**
  * Dialog zum Hinzufügen eines neuen Projekts mit beliebig vielen Studenten (per BinarySearchTree).
@@ -145,21 +147,38 @@ public class AddDialog extends JDialog {
         }
 
         try {
+            // Prüfen, ob der Titel nicht leer ist (leere Projekte ausnehmen)
             if (titel.isEmpty()) {
                 throw new EmptyNameException();
             }
+
+            // Prüfen, ob der Titel bereits vergeben ist
+            for (Projekt p : projectList) {
+                // Titel-Vergleich case-insensitive und keine leeren Titel prüfen
+                if (p.getTitel() != null && !p.getTitel().isEmpty() &&
+                    p.getTitel().equalsIgnoreCase(titel)) {
+                    throw new DuplicatedNameException("Der Projekttitel \"" + titel + "\" ist bereits vergeben!");
+                }
+            }
+
+            // Note validieren
             try {
                 note = Double.parseDouble(noteText);
             } catch (NumberFormatException nfe) {
                 throw new ValidationException("Note muss eine Zahl sein: " + noteText);
             }
+
+            // Projekt anlegen und hinzufügen
             Projekt projekt = new Projekt(titel, note, datumText);
             for (Student s : tempStudents) {
                 projekt.addStudent(s);
             }
+
             projectList.add(projekt);
             confirmed = true;
             dispose();
+        } catch (DuplicatedNameException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
         } catch (ValidationException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Eingabefehler", JOptionPane.ERROR_MESSAGE);
         }
