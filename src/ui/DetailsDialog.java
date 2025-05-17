@@ -3,6 +3,8 @@ package ui;
 import datastructure.EigeneListe;
 import model.Projekt;
 import model.Student;
+import ui.PasswordDialog;
+import ui.policy.DeletionPolicy;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,7 +12,8 @@ import java.util.function.Consumer;
 
 public class DetailsDialog extends JDialog {
     private final Projekt projekt;
-    private final Consumer<Projekt> deleteCallback;
+    private final DeletionPolicy<Projekt> deletionPolicy = new ui.policy.PasswordDeletionPolicy();;
+    private final ListPanel listPanel;
 
     private boolean modified = false;
     public boolean isModified() { return modified; }
@@ -22,14 +25,17 @@ public class DetailsDialog extends JDialog {
      * @param parent Übergeordnetes Fenster
      * @param projekt Das anzuzeigende Projekt
      */
-    public DetailsDialog(Window parent, Projekt projekt, Consumer<Projekt> deleteCallback, EigeneListe<Projekt> projectList) {
+    public DetailsDialog(Window parent,
+                         Projekt projekt,
+                         ListPanel listPanel,
+                         EigeneListe<Projekt> projectList) {
         super(parent, "Projekt-Details", ModalityType.APPLICATION_MODAL);
         this.projekt = projekt;
+        this.listPanel = listPanel;
         this.projectList = projectList;
         initComponents();
         setSize(400, 350);
         setLocationRelativeTo(parent);
-        this.deleteCallback = deleteCallback;
     }
 
     private void initComponents() {
@@ -91,7 +97,8 @@ public class DetailsDialog extends JDialog {
         // Listener
         closeButton.addActionListener(e -> dispose());
         editButton.addActionListener(e -> {
-            EditDialog editDialog = new EditDialog((Frame) SwingUtilities.getWindowAncestor(this), projekt, projectList);            editDialog.setVisible(true);
+            EditDialog editDialog = new EditDialog((Frame) SwingUtilities.getWindowAncestor(this), projekt, projectList);
+            editDialog.setVisible(true);
             if (editDialog.isConfirmed()) {
                 modified = true;
                 // Nach Bearbeitung Dialog schließen, damit Liste sofort neu geladen werden kann
@@ -100,11 +107,13 @@ public class DetailsDialog extends JDialog {
         });
 
         deleteButton.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(
-                    this, "Projekt wirklich löschen?", "Löschen", JOptionPane.YES_NO_OPTION);
-            if (confirm == JOptionPane.YES_OPTION) {
-                if (deleteCallback != null) deleteCallback.accept(projekt);
-                dispose();
+            PasswordDialog pd = new PasswordDialog((Frame) SwingUtilities.getWindowAncestor(this), deletionPolicy, projekt);
+            pd.setVisible(true);
+            if (pd.isDeletionAllowed()) {
+                projectList.remove(projekt);
+                modified = true; // Status auf geändert setzen
+                listPanel.refresh();
+                dispose(); // Dialog schließen
             }
         });
 
