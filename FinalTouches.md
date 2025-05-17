@@ -9,7 +9,7 @@
     * Beim Erstellen eines neuen Projekts prüfen, ob der Titel (außer bei leeren Projekten) bereits in der Projektliste existiert.
     * Falls ja, `DuplicateNameException` werfen.
 
-* [ ] **Studenten-Matrikelnummer-Eindeutigkeit:**
+* [x] **Studenten-Matrikelnummer-Eindeutigkeit:**
 
     * Beim Hinzufügen eines Studenten prüfen, ob die Matrikelnummer bereits im Projekt (oder global, je nach Logik) vergeben wurde.
     * Falls ja, `DuplicateMatrikelnummerException` werfen.

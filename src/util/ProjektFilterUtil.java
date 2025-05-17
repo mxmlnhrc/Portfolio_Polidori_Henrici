@@ -11,7 +11,7 @@ public class ProjektFilterUtil {
     /**
      * Gibt alle Studenten aus allen Projekten als BinarySearchTree zurück.
      * Die Studenten werden nach Matrikelnummer sortiert eingefügt.
-     * @param alleProjekte Collection aller Projekte
+     * @param alleProjekte Projektliste mit allen Projekten
      * @return BinarySearchTree<Student> mit allen Studenten
      */
     public static BinarySearchTree<Student> getAllStudents(EigeneListe<Projekt> alleProjekte) {
