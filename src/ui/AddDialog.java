@@ -4,11 +4,13 @@ import model.Projekt;
 import model.Student;
 import datastructure.EigeneListe;
 import datastructure.BinarySearchTree;
+import util.DateValidator;
 import util.ProjektFilterUtil;
 import exception.EmptyNameException;
 import exception.ValidationException;
 import exception.DuplicatedNameException;
 import exception.DuplicatedMatrikelnummerException;
+import util.Validator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +24,7 @@ import java.util.Comparator;
  */
 public class AddDialog extends JDialog {
     private boolean confirmed = false;
+    private final Validator<String> dateValidator = new DateValidator();
 
     // Projektfelder
     private final JTextField titelField = new JTextField(20);
@@ -81,7 +84,7 @@ public class AddDialog extends JDialog {
         gbc.gridx = 0; gbc.gridy = 4; panel.add(new JLabel("Student Name:"), gbc);
         gbc.gridx = 1; panel.add(studentNameField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5; panel.add(new JLabel("Geburtsdatum (yyyy-MM-dd):"), gbc);
+        gbc.gridx = 0; gbc.gridy = 5; panel.add(new JLabel("Geburtsdatum (yyyyMMdd):"), gbc);
         gbc.gridx = 1; panel.add(studentBirthField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 6; panel.add(new JLabel("Matrikelnummer:"), gbc);
@@ -116,7 +119,11 @@ public class AddDialog extends JDialog {
         String name = studentNameField.getText().trim();
         String birth = studentBirthField.getText().trim();
         String matrikel = studentMatField.getText().trim();
+
         try {
+            // Geburtsdatum validieren
+            dateValidator.validate(birth);
+
             if (name.isEmpty() || birth.isEmpty() || matrikel.isEmpty()) {
                 throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
             }

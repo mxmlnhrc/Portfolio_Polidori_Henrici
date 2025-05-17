@@ -14,12 +14,12 @@
     * Beim Hinzufügen eines Studenten prüfen, ob die Matrikelnummer bereits im Projekt (oder global, je nach Logik) vergeben wurde.
     * Falls ja, `DuplicateMatrikelnummerException` werfen.
 
-* [ ] **Leerer Projekttitel:**
+* [x] **Leerer Projekttitel:**
 
     * Wird ein Projekt ohne Titel erstellt, `EmptyNameException` werfen.
     * Ausnahme: Vollständig leere Projekte (alle Felder leer) sind erlaubt.
 
-* [ ] **Ungültige Note:**
+* [x] **Ungültige Note:**
 
     * Wenn die Note außerhalb des zulässigen Bereichs liegt (z. B. <0 oder >100, je nach Regel), `InvalidGradeException` werfen.
 
