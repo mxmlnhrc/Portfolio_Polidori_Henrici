@@ -4,6 +4,8 @@ import model.Projekt;
 import datastructure.EigeneListe;
 import algorithm.SortAlgorithm;
 import model.Student;
+import algorithm.HeapSort;
+import algorithm.MergeSort;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -17,18 +19,21 @@ import java.util.List;
  */
 public class ListPanel extends JPanel {
     private final EigeneListe<Projekt> projects;
-    private final SortAlgorithm<Projekt> mergeSort;
-    private final SortAlgorithm<Projekt> heapSort;
     private final JTable table;
     private final DefaultTableModel tableModel;
     private final JComboBox<String> sortCombo;
+
+    // Aktuellen Sortieralgorithmus initialisieren
+    private final algorithm.SortAlgorithm<model.Projekt> mergeSort = new algorithm.MergeSort<>();
+    private final algorithm.SortAlgorithm<model.Projekt> heapSort = new algorithm.HeapSort<>();
+    private algorithm.SortAlgorithm<model.Projekt> currentSort = mergeSort; // Standard
 
     public ListPanel(EigeneListe<Projekt> projects,
                      SortAlgorithm<Projekt> mergeSort,
                      SortAlgorithm<Projekt> heapSort) {
         this.projects = projects;
-        this.mergeSort = mergeSort;
-        this.heapSort = heapSort;
+//        this.mergeSort = mergeSort;
+//        this.heapSort = heapSort;
         this.tableModel = new DefaultTableModel(
                 new String[]{"Titel","Note","Abgabedatum","Studenten"}, 0) {
             @Override
@@ -37,6 +42,8 @@ public class ListPanel extends JPanel {
             }
         };
         this.table = new JTable(tableModel);
+
+
         this.sortCombo = new JComboBox<>(new String[]{"Titel","Note","Abgabedatum"});
         initUI();
         refresh();
@@ -48,15 +55,32 @@ public class ListPanel extends JPanel {
 
         JPanel control = new JPanel();
         control.add(new JLabel("Sortieren nach:"));
-        control.add(sortCombo);
+//        control.add(sortCombo);
         JButton sortAsc = new JButton("Aufsteigend");
         JButton sortDesc = new JButton("Absteigend");
-        control.add(sortAsc);
-        control.add(sortDesc);
+//        control.add(sortAsc);
+//        control.add(sortDesc);
         add(control, BorderLayout.NORTH);
+
+        // Auswahl der Sortieralgorithmen
+        JComboBox<String> algoCombo = new JComboBox<>(new String[]{"MergeSort", "HeapSort"});
+        algoCombo.addActionListener(e -> {
+            if (algoCombo.getSelectedIndex() == 0) currentSort = mergeSort;
+            else currentSort = heapSort;
+        });
+
+        JPanel sortPanel = new JPanel();
+        sortPanel.add(new JLabel("Algorithmus:"));
+        sortPanel.add(algoCombo);
+        sortPanel.add(new JLabel("Kriterium:"));
+        sortPanel.add(sortCombo);
+        sortPanel.add(sortAsc);
+        sortPanel.add(sortDesc);
 
         sortAsc.addActionListener(e -> sort(true));
         sortDesc.addActionListener(e -> sort(false));
+
+        add(sortPanel, BorderLayout.NORTH);
 
         /**
          * MouseListener für Doppelklick auf die Tabelle
@@ -79,22 +103,44 @@ public class ListPanel extends JPanel {
 
     private void sort(boolean ascending) {
         String criteria = (String) sortCombo.getSelectedItem();
-        Comparator<Projekt> comp;
+        Comparator<model.Projekt> comp;
+
         switch (criteria) {
             case "Note":
-                comp = Comparator.comparingDouble(Projekt::getNote);
+                comp = Comparator.comparingDouble(model.Projekt::getNote);
                 break;
             case "Abgabedatum":
-                comp = Comparator.comparing(Projekt::getAbgabeDatum);
+                comp = Comparator.comparing(model.Projekt::getAbgabeDatum,
+                        Comparator.nullsFirst(String::compareTo));
                 break;
+            case "Titel":
             default:
-                comp = Comparator.comparing(Projekt::getTitel);
+                comp = Comparator.comparing(model.Projekt::getTitel,
+                        Comparator.nullsFirst(String::compareToIgnoreCase));
         }
         if (!ascending) comp = comp.reversed();
-        // Standardmäßig MergeSort verwenden
-        mergeSort.sort(toList(), comp);
-        refresh();
+
+        // Projekte aus Baum in List sammeln
+        List<model.Projekt> all = new ArrayList<>();
+        for (model.Projekt p : projects) all.add(p);
+
+        // Hier NUR eigenen Algorithmus nutzen!
+        currentSort.sort(all, comp);
+
+        // Tabelle neu füllen
+        tableModel.setRowCount(0);
+        for (model.Projekt p : all) {
+            StringBuilder studenten = new StringBuilder();
+            for (model.Student s : p.getTeilnehmer()) {
+                if (studenten.length() > 0) studenten.append(", ");
+                studenten.append(s.getName());
+            }
+            tableModel.addRow(new Object[]{
+                    p.getTitel(), p.getNote(), p.getAbgabeDatum(), studenten.toString()
+            });
+        }
     }
+
 
     private List<Projekt> toList() {
         List<Projekt> list = new ArrayList<>();
