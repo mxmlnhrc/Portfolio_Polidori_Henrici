@@ -120,6 +120,22 @@ public class AddDialog extends JDialog {
         String noteText = noteField.getText().trim();
         String datumText = datumField.getText().trim();
         double note;
+
+        // PRÜFUNG: Steht in einem Studentenfeld noch Text?
+        if (!studentNameField.getText().trim().isEmpty() ||
+                !studentBirthField.getText().trim().isEmpty() ||
+                !studentMatField.getText().trim().isEmpty()) {
+            int response = JOptionPane.showConfirmDialog(
+                    this,
+                    "Im Studenten-Eintragsfeld steht noch etwas. Soll dieser Student noch hinzugefügt werden?",
+                    "Student hinzufügen?",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (response == JOptionPane.YES_OPTION) {
+                onAddStudent();
+            }
+        }
+
         try {
             if (titel.isEmpty()) {
                 throw new EmptyNameException();

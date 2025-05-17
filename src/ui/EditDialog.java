@@ -92,7 +92,7 @@ public class EditDialog extends JDialog {
 
         // Bearbeiten eines Studenten
         gbc.gridx = 0; gbc.gridy = 10; gbc.gridwidth = 1;
-        panel.add(new JLabel("Neuer Name:"), gbc);
+        panel.add(new JLabel("Bearbeiteter Name:"), gbc);
         gbc.gridx = 1;
         panel.add(editStudentNameField, gbc);
 
@@ -112,13 +112,13 @@ public class EditDialog extends JDialog {
         gbc.gridx = 1; panel.add(datumField, gbc);
 
         // Buttons
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
         JButton okButton = new JButton("OK");
         JButton cancelButton = new JButton("Abbrechen");
         buttonPanel.add(okButton);
         buttonPanel.add(cancelButton);
 
-        gbc.gridx = 0; gbc.gridy = 3; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0; gbc.gridy = 12; gbc.gridwidth = 2; gbc.anchor = GridBagConstraints.CENTER;
         panel.add(buttonPanel, gbc);
 
         getContentPane().add(panel, BorderLayout.CENTER);
@@ -242,6 +242,21 @@ public class EditDialog extends JDialog {
             note = Double.parseDouble(noteText);
             projekt.setNote(note);
             projekt.setAbgabeDatum(datumText);
+            // PRÜFUNG: Steht in einem Studentenfeld noch Text?
+            if (!studentNameField.getText().trim().isEmpty() ||
+                    !studentBirthField.getText().trim().isEmpty() ||
+                    !studentMatField.getText().trim().isEmpty()) {
+                int response = JOptionPane.showConfirmDialog(
+                        this,
+                        "Im Studenten-Eintragsfeld steht noch etwas. Soll dieser Student noch hinzugefügt werden?",
+                        "Student hinzufügen?",
+                        JOptionPane.YES_NO_OPTION
+                );
+                if (response == JOptionPane.YES_OPTION) {
+                    onAddStudent();
+                }
+            }
+
             confirmed = true;
             dispose();
         } catch (Exception ex) {
