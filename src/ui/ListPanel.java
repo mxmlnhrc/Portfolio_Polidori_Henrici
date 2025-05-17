@@ -4,8 +4,6 @@ import model.Projekt;
 import datastructure.EigeneListe;
 import algorithm.SortAlgorithm;
 import model.Student;
-import algorithm.HeapSort;
-import algorithm.MergeSort;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -34,8 +32,8 @@ public class ListPanel extends JPanel {
     private final JButton resetBtn = new JButton("Zurücksetzen");
 
     // Filterfelder anlegen
-    private final JTextField gradeSearchField = new JTextField(5);
-    private final JButton gradeSearchBtn = new JButton("Suchen");
+    private final JTextField gradeFilterField = new JTextField(5);
+    private final JButton gradeFilterBtn = new JButton("Filtern");
     private final JComboBox<String> filterCombo;
     private String filterCriteria = "exakt";
 
@@ -114,9 +112,9 @@ public class ListPanel extends JPanel {
         // Filterfeld für Note
         JPanel gradeSearchPanel = new JPanel();
         gradeSearchPanel.add(new JLabel("Suche nach Note:"));
-        gradeSearchPanel.add(gradeSearchField);
+        gradeSearchPanel.add(gradeFilterField);
         gradeSearchPanel.add(filterCombo);
-        gradeSearchPanel.add(gradeSearchBtn);
+        gradeSearchPanel.add(gradeFilterBtn);
 
         // Filter-Dropdown für Note
         filterCombo.addActionListener(e -> {
@@ -140,8 +138,8 @@ public class ListPanel extends JPanel {
         searchField.addActionListener(e -> performSearch()); // Enter im Feld
 
         // ActionListener für den Noten-Filter
-        gradeSearchBtn.addActionListener(e -> performGradeSearch());
-        gradeSearchField.addActionListener(e -> performGradeSearch()); // Enter
+        gradeFilterBtn.addActionListener(e -> filterByGrade());
+        gradeFilterField.addActionListener(e -> filterByGrade()); // Enter
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -168,53 +166,63 @@ public class ListPanel extends JPanel {
      * Binäre Suche nach Projekten mit exakt passender Note.
      * Die Liste muss vorher sortiert sein!
      */
-    private void performGradeSearch() {
-        String noteText = gradeSearchField.getText().trim();
-        if (noteText.isEmpty()) return;
-        double target;
+    private void filterByGrade() {
+        String valText = gradeFilterField.getText().trim();
+        if (valText.isEmpty()) return;
+
+        double value;
         try {
-            target = Double.parseDouble(noteText);
+            value = Double.parseDouble(valText);
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(this, "Ungültige Note!");
+            JOptionPane.showMessageDialog(this, "Ungültige Eingabe!");
             return;
         }
 
-        // Liste der Projekte nach Note sortieren
-        List<model.Projekt> all = new ArrayList<>();
-        for (model.Projekt p : projects) all.add(p);
-
-        // Sortiere mit deinem Algorithmus (z. B. MergeSort)
-        mergeSort.sort(all, Comparator.comparingDouble(model.Projekt::getNote));
-
-        // Binäre Suche
+        String criteria = (String) filterCombo.getSelectedItem();
+        tableModel.setRowCount(0);
         List<model.Projekt> found = new ArrayList<>();
-        int left = 0, right = all.size() - 1;
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            double midNote = all.get(mid).getNote();
-            if (midNote == target) {
-                // Finde alle Projekte mit dieser Note (es können mehrere sein)
-                // Gehe nach links und rechts von mid weiter
-                int i = mid;
-                while (i >= 0 && all.get(i).getNote() == target) {
-                    found.add(0, all.get(i));
-                    i--;
+
+        if ("Exakt".equals(criteria)) {
+            // Binäre Suche auf sortierter Liste
+            List<model.Projekt> all = new ArrayList<>();
+            for (model.Projekt p : projects) all.add(p);
+            // Sortiere nach Note
+            mergeSort.sort(all, Comparator.comparingDouble(model.Projekt::getNote));
+
+            // Binäre Suche nach passender Note (siehe vorherige Antwort)
+            int left = 0, right = all.size() - 1;
+            while (left <= right) {
+                int mid = (left + right) / 2;
+                double midNote = all.get(mid).getNote();
+                if (midNote == value) {
+                    int i = mid;
+                    while (i >= 0 && all.get(i).getNote() == value) {
+                        found.add(0, all.get(i));
+                        i--;
+                    }
+                    i = mid + 1;
+                    while (i < all.size() && all.get(i).getNote() == value) {
+                        found.add(all.get(i));
+                        i++;
+                    }
+                    break;
+                } else if (midNote < value) {
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
                 }
-                i = mid + 1;
-                while (i < all.size() && all.get(i).getNote() == target) {
-                    found.add(all.get(i));
-                    i++;
-                }
-                break;
-            } else if (midNote < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+            }
+        } else if ("Minimum".equals(criteria)) {
+            for (model.Projekt p : projects) {
+                if (p.getNote() >= value) found.add(p);
+            }
+        } else if ("Maximum".equals(criteria)) {
+            for (model.Projekt p : projects) {
+                if (p.getNote() <= value) found.add(p);
             }
         }
 
-        // Tabelle anzeigen
-        tableModel.setRowCount(0);
+        // Tabelle befüllen
         for (model.Projekt p : found) {
             StringBuilder studenten = new StringBuilder();
             for (model.Student s : p.getTeilnehmer()) {
@@ -227,9 +235,10 @@ public class ListPanel extends JPanel {
         }
 
         if (found.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Kein Projekt mit Note " + target + " gefunden.");
+            JOptionPane.showMessageDialog(this, "Kein passendes Projekt gefunden!");
         }
     }
+
 
     /**
      * Zeigt nur Projekte, deren Titel den Suchbegriff enthalten.
