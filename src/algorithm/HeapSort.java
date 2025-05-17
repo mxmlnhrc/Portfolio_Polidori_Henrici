@@ -4,8 +4,8 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
-     * Heapsort-Implementierung (Selection-Kategorie).
-     * @param <T> Typ der zu sortierenden Elemente
+ * Heapsort-Implementierung (Selection-Kategorie).
+ * @param <T> Typ der zu sortierenden Elemente
  */
 
 /**
@@ -18,40 +18,32 @@ import java.util.List;
  */
 
 public class HeapSort<T> implements SortAlgorithm<T> {
-
     @Override
     public void sort(List<T> list, Comparator<T> comparator) {
         int n = list.size();
-        // Heap aufbauen (Max-Heap)
-        for (int i = n / 2 - 1; i >= 0; i--) {
+        for (int i = n / 2 - 1; i >= 0; i--)
             heapify(list, n, i, comparator);
-        }
-        // Elemente extrahieren
-        for (int i = n - 1; i > 0; i--) {
-            swap(list, 0, i);
+        for (int i = n - 1; i >= 0; i--) {
+            T temp = list.get(0);
+            list.set(0, list.get(i));
+            list.set(i, temp);
             heapify(list, i, 0, comparator);
         }
     }
 
-    private void heapify(List<T> list, int heapSize, int rootIndex, Comparator<T> comparator) {
-        int largest = rootIndex;
-        int left = 2 * rootIndex + 1;
-        int right = 2 * rootIndex + 2;
-        if (left < heapSize && comparator.compare(list.get(left), list.get(largest)) > 0) {
-            largest = left;
+    private void heapify(List<T> list, int n, int i, Comparator<T> comparator) {
+        int largest = i;
+        int l = 2 * i + 1;
+        int r = 2 * i + 2;
+        if (l < n && comparator.compare(list.get(l), list.get(largest)) > 0)
+            largest = l;
+        if (r < n && comparator.compare(list.get(r), list.get(largest)) > 0)
+            largest = r;
+        if (largest != i) {
+            T swap = list.get(i);
+            list.set(i, list.get(largest));
+            list.set(largest, swap);
+            heapify(list, n, largest, comparator);
         }
-        if (right < heapSize && comparator.compare(list.get(right), list.get(largest)) > 0) {
-            largest = right;
-        }
-        if (largest != rootIndex) {
-            swap(list, rootIndex, largest);
-            heapify(list, heapSize, largest, comparator);
-        }
-    }
-
-    private void swap(List<T> list, int i, int j) {
-        T temp = list.get(i);
-        list.set(i, list.get(j));
-        list.set(j, temp);
     }
 }
