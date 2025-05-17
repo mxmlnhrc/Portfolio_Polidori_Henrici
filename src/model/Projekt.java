@@ -7,7 +7,9 @@ import util.DateValidator;
 import util.GradeValidator;
 import util.Validator;
 import datastructure.EigeneListe;
-import datastructure.SimpleLinkedList;
+import datastructure.BinarySearchTree;
+
+import java.util.Comparator;
 
 /**
  * Repräsentiert ein Projekt mit Titel, Teilnehmern, Note und Abgabedatum.
@@ -16,7 +18,7 @@ import datastructure.SimpleLinkedList;
  */
 public class Projekt {
     private String titel;
-    private final EigeneListe<Student> teilnehmer;
+    private final BinarySearchTree<Student> teilnehmer;
     private double note;
     private String abgabeDatum; // Format "yyyyMMdd"
 
@@ -27,7 +29,7 @@ public class Projekt {
      * Standard-Konstruktor für leere Projekterstellung.
      */
     public Projekt() {
-        this.teilnehmer = new SimpleLinkedList<>();
+        this.teilnehmer = new BinarySearchTree<Student>(Comparator.comparing(Student::getMatrikelnummer));
     }
 
     /**

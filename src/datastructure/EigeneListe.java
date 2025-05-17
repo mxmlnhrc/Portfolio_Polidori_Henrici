@@ -9,4 +9,6 @@ public interface EigeneListe<T> extends Iterable<T> {
     int size(); // Liefert die Anzahl der Elemente in der Liste
     boolean contains(T element);  // Prüft, ob ein Element in der Liste enthalten ist
     void clear(); // Entfernt alle Elemente aus der Liste
+
+    boolean remove(T element, String credential);
 }

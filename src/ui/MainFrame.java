@@ -9,6 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Comparator;
 
 /**
  * Hauptfenster der Portfolio-Management-Anwendung.
@@ -95,7 +96,7 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Zeigt das Passwortdialog vor dem Löschen an.
+     * Zeigt den Passwortdialog vor dem Löschen an.
      */
     private void showDeleteDialog() {
         Projekt selected = listPanel.getSelectedProjekt();
@@ -131,7 +132,7 @@ public class MainFrame extends JFrame {
         // TODO: Dependency-Injection hier konfigurieren
         SwingUtilities.invokeLater(() -> {
             // Beispiel: Projektliste und Algorithmen erstellen
-            EigeneListe<Projekt> projects = new datastructure.SimpleLinkedList<>();
+            EigeneListe<Projekt> projects = new datastructure.BinarySearchTree<>(Comparator.comparing(Projekt::getTitel));
             SortAlgorithm<Projekt> merge = new algorithm.MergeSort<>();
             SortAlgorithm<Projekt> heap = new algorithm.HeapSort<>();
             DeletionPolicy<Projekt> policy = new ui.policy.PasswordDeletionPolicy();
