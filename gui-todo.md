@@ -14,12 +14,12 @@ Diese Liste arbeiten wir Schritt für Schritt ab und können sie jederzeit ergä
 * [x] 3\. Oberfläche/Workflow: Bearbeiten-Button & Auswahl
 * [x] 4\. Validierungen & UX-Feinschliff beim Editieren
 * [x] 5\. Linie zwischen Projekt eingabe und Studenten eingabe
-* [ ] 6\. Projekt Details per Doppelklick öffnen
-  * [ ] 6.1 Doppelklick auf Projekt öffnet DetailsDialog
-  * [ ] 6.2 Ansicht des Projekts im Dialog
-    * [ ] 6.2.1 Projekttitel/Note/Abgabedatum übersichtlich
-    * [ ] 6.2.2 Studentenübersicht
-    * [ ] 6.2.3 Button zum Bearbeiten
-    * [ ] 6.2.4 Button zum Löschen
+* [x] 6\. Projekt Details per Doppelklick öffnen
+  * [x] 6.1 Doppelklick auf Projekt öffnet DetailsDialog
+  * [x] 6.2 Ansicht des Projekts im Dialog
+    * [x] 6.2.1 Projekttitel/Note/Abgabedatum übersichtlich
+    * [x] 6.2.2 Studentenübersicht
+    * [x] 6.2.3 Button zum Bearbeiten
+    * [x] 6.2.4 Button zum Löschen
 
 ---
