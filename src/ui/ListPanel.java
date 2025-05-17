@@ -28,11 +28,21 @@ public class ListPanel extends JPanel {
     private final algorithm.SortAlgorithm<model.Projekt> heapSort = new algorithm.HeapSort<>();
     private algorithm.SortAlgorithm<model.Projekt> currentSort = mergeSort; // Standard
 
-    // Filterfelder anlegen
+    // Suchfelder anlegen
     private final JTextField searchField = new JTextField(14);
     private final JButton searchBtn = new JButton("Suchen");
     private final JButton resetBtn = new JButton("Zurücksetzen");
 
+    // Filterfelder anlegen
+    private final JTextField gradeSearchField = new JTextField(5);
+    private final JButton gradeSearchBtn = new JButton("Suche Note");
+
+    /**
+     * Konstruktor für das ListPanel.
+     * @param projects - Liste der Projekte
+     * @param mergeSort - Sortieralgorithmus für MergeSort
+     * @param heapSort - Sortieralgorithmus für HeapSort
+     */
     public ListPanel(EigeneListe<Projekt> projects,
                      SortAlgorithm<Projekt> mergeSort,
                      SortAlgorithm<Projekt> heapSort) {
@@ -83,16 +93,16 @@ public class ListPanel extends JPanel {
        topPanel.setLayout(new BorderLayout());
        topPanel.add(sortPanel, BorderLayout.NORTH);
 
-       // Filterfeld und Buttons
+       // Suchfelder und Buttons
        JPanel searchPanel = new JPanel();
        searchPanel.add(new JLabel("Suche Projekt:"));
        searchPanel.add(searchField);
        searchPanel.add(searchBtn);
        searchPanel.add(resetBtn);
-       // Hinzufügen der Filter-Buttons
+       // Hinzufügen der Such-Buttons
        topPanel.add(searchPanel, BorderLayout.SOUTH);
 
-        // ActionListener für die Filter-Buttons
+        // ActionListener für die Such-Buttons
         searchBtn.addActionListener(e -> performSearch());
         resetBtn.addActionListener(e -> resetSearch());
         searchField.addActionListener(e -> performSearch()); // Enter im Feld
@@ -141,7 +151,7 @@ public class ListPanel extends JPanel {
     }
 
     /**
-     * Setzt die Filter zurück und zeigt alle Projekte an.
+     * Setzt die Suche zurück und zeigt alle Projekte an.
      */
     private void resetSearch() {
         searchField.setText("");
