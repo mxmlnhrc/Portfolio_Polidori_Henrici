@@ -21,9 +21,15 @@ public class EditDialog extends JDialog {
     private final JTextField studentMatField = new JTextField(8);
 
     private final Projekt projekt;
+
     // Anzeige der bereits vorhandenen Studenten
     private final DefaultListModel<String> studentListModel = new DefaultListModel<>();
     private final JList<String> studentListView = new JList<>(studentListModel);
+
+    // Bearbeiten-Feld und Button
+    private final JTextField editStudentNameField = new JTextField(12);
+    JButton editStudentBtn = new JButton("Student-Name ändern");
+
 
     public EditDialog(Frame parent, Projekt projekt) {
         super(parent, "Projekt bearbeiten", true);
@@ -82,6 +88,17 @@ public class EditDialog extends JDialog {
 
         removeStudentBtn.addActionListener(e -> onRemoveStudent());
 
+        // Bearbeiten eines Studenten
+        gbc.gridx = 0; gbc.gridy = 10; gbc.gridwidth = 1;
+        panel.add(new JLabel("Neuer Name:"), gbc);
+        gbc.gridx = 1;
+        panel.add(editStudentNameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 11; gbc.gridwidth = 2;
+        panel.add(editStudentBtn, gbc);
+
+        editStudentBtn.addActionListener(e -> onEditStudentName());
+
         // GUI aufbauen
         gbc.gridx = 0; gbc.gridy = 0; panel.add(new JLabel("Titel:"), gbc);
         gbc.gridx = 1; panel.add(titelField, gbc);
@@ -107,6 +124,46 @@ public class EditDialog extends JDialog {
         okButton.addActionListener(e -> onOk());
         cancelButton.addActionListener(e -> onCancel());
     }
+
+    /**
+     * Ändert den Namen des ausgewählten Studenten.
+     * Name-Feld muss nicht leer sein.
+     */
+    private void onEditStudentName() {
+        int selectedIndex = studentListView.getSelectedIndex();
+        String newName = editStudentNameField.getText().trim();
+        if (selectedIndex < 0) {
+            JOptionPane.showMessageDialog(this, "Kein Student ausgewählt!");
+            return;
+        }
+        if (newName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Der neue Name darf nicht leer sein!");
+            return;
+        }
+        // Matrikelnummer extrahieren wie zuvor:
+        String selectedValue = studentListModel.getElementAt(selectedIndex);
+        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
+
+        Student toEdit = null;
+        for (Student s : projekt.getTeilnehmer()) {
+            if (s.getMatrikelnummer().equals(mat)) {
+                toEdit = s;
+                break;
+            }
+        }
+        if (toEdit != null) {
+            try {
+                toEdit.setName(newName);
+                updateStudentListModel();
+                editStudentNameField.setText("");
+            } catch (exception.EmptyNameException ex) {
+                JOptionPane.showMessageDialog(this, "Name darf nicht leer sein: " + ex.getMessage());
+            }
+            updateStudentListModel();
+            editStudentNameField.setText("");
+        }
+    }
+
 
     /**
      * Entfernt den ausgewählten Studenten aus dem Projekt.
