@@ -71,6 +71,10 @@ public class MainFrame extends JFrame {
         addItem.addActionListener(e -> showAddDialog());
         menu.add(addItem);
 
+        JMenuItem emptyProjectItem = new JMenuItem("Leeres Projekt anlegen");
+        emptyProjectItem.addActionListener(e -> createEmptyProject());
+        menu.add(emptyProjectItem);
+
         JMenuItem deleteItem = new JMenuItem("Löschen");
         deleteItem.addActionListener(e -> showDeleteDialog());
         menu.add(deleteItem);
@@ -82,6 +86,15 @@ public class MainFrame extends JFrame {
 
         menuBar.add(menu);
         return menuBar;
+    }
+
+    /**
+     * Legt ein leeres Projekt an und fügt es der Liste hinzu.
+     */
+    private void createEmptyProject() {
+        Projekt p = new Projekt(); // komplett leer
+        projectList.add(p);
+        listPanel.refresh();
     }
 
     /**

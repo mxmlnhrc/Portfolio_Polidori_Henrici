@@ -92,6 +92,11 @@ public class ListPanel extends JPanel {
     public void refresh() {
         tableModel.setRowCount(0);
         for (Projekt p : projects) {
+            // Leere Felder anzeigen
+            String titel = p.getTitel() != null ? p.getTitel() : "";
+            String note = p.getNote() != 0 ? String.valueOf(p.getNote()) : "";
+            String datum = p.getAbgabeDatum() != null ? p.getAbgabeDatum() : "";
+            // Studenten zusammenfassen
             StringBuilder studenten = new StringBuilder();
             for (Student s : p.getTeilnehmer()) {
                 if (!studenten.isEmpty()) studenten.append(", ");
