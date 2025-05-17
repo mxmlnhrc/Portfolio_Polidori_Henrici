@@ -24,6 +24,8 @@ import java.util.Comparator;
  */
 public class AddDialog extends JDialog {
     private boolean confirmed = false;
+
+    // Validator Datum
     private final Validator<String> dateValidator = new DateValidator();
 
     // Projektfelder
@@ -143,8 +145,7 @@ public class AddDialog extends JDialog {
                 }
             }
 
-            LocalDate date = LocalDate.parse(birth); // Format yyyy-MM-dd
-            Student student = new Student(name, date, matrikel);
+            Student student = new Student(name, birth, matrikel);
             tempStudents.add(student);
             studentListModel.addElement(name + " (" + matrikel + ")");
             studentNameField.setText(""); studentBirthField.setText(""); studentMatField.setText("");

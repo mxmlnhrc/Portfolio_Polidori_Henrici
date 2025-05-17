@@ -5,7 +5,9 @@ import exception.DuplicatedMatrikelnummerException;
 import exception.DuplicatedNameException;
 import model.Projekt;
 import model.Student;
+import util.DateValidator;
 import util.ProjektFilterUtil;
+import util.Validator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +16,9 @@ import java.time.LocalDate;
 public class EditDialog extends JDialog {
     private boolean confirmed = false;
 
+    // Validator Datum
+    private final Validator<String> dateValidator = new DateValidator();
+
     // Projektfelder
     private final JTextField titelField = new JTextField(20);
     private final JTextField noteField = new JTextField(5);
@@ -21,7 +26,7 @@ public class EditDialog extends JDialog {
 
     // Studentenfelder für das Hinzufügen
     private final JTextField studentNameField = new JTextField(12);
-    private final JTextField studentBirthField = new JTextField(10); // yyyy-MM-dd
+    private final JTextField studentBirthField = new JTextField(10); // yyyyMMdd
     private final JTextField studentMatField = new JTextField(8);
 
     private final Projekt projekt;
@@ -76,7 +81,7 @@ public class EditDialog extends JDialog {
         panel.add(new JLabel("Student Name:"), gbc);
         gbc.gridx = 1; panel.add(studentNameField, gbc);
 
-        gbc.gridx = 0; gbc.gridy = 5; panel.add(new JLabel("Geburtsdatum (yyyy-MM-dd):"), gbc);
+        gbc.gridx = 0; gbc.gridy = 5; panel.add(new JLabel("Geburtsdatum (yyyyMMdd):"), gbc);
         gbc.gridx = 1; panel.add(studentBirthField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 6; panel.add(new JLabel("Matrikelnummer:"), gbc);
@@ -223,11 +228,12 @@ public class EditDialog extends JDialog {
         String birth = studentBirthField.getText().trim();
         String matrikel = studentMatField.getText().trim();
         try {
+            // Geburtsdatum validieren
+            dateValidator.validate(birth);
+
             if (name.isEmpty() || birth.isEmpty() || matrikel.isEmpty()) {
                 throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
             }
-            // Geburtsdatum parsen (Format yyyy-MM-dd)
-            LocalDate date = LocalDate.parse(birth);
 
             // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
             for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
@@ -236,7 +242,8 @@ public class EditDialog extends JDialog {
                             "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
                 }
             }
-            Student s = new Student(name, date, matrikel);
+
+            Student s = new Student(name, birth, matrikel);
 
             projekt.addStudent(s);
             updateStudentListModel();
