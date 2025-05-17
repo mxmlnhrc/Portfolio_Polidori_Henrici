@@ -35,7 +35,6 @@ public class ListPanel extends JPanel {
     private final JTextField gradeFilterField = new JTextField(5);
     private final JButton gradeFilterBtn = new JButton("Filtern");
     private final JComboBox<String> filterCombo;
-    private String filterCriteria = "exakt";
 
     /**
      * Konstruktor für das ListPanel.
@@ -110,26 +109,14 @@ public class ListPanel extends JPanel {
        topPanel.add(searchPanel, BorderLayout.CENTER);
 
         // Filterfeld für Note
-        JPanel gradeSearchPanel = new JPanel();
-        gradeSearchPanel.add(new JLabel("Suche nach Note:"));
-        gradeSearchPanel.add(gradeFilterField);
-        gradeSearchPanel.add(filterCombo);
-        gradeSearchPanel.add(gradeFilterBtn);
-
-        // Filter-Dropdown für Note
-        filterCombo.addActionListener(e -> {
-            String selected = (String) filterCombo.getSelectedItem();
-            if ("Exakt".equals(selected)) {
-                filterCriteria = "exakt";
-            } else if ("Mindestens".equals(selected)) {
-                filterCriteria = "min";
-            } else {
-                filterCriteria = "max";
-            }
-        });
+        JPanel filterGradePanel = new JPanel();
+        filterGradePanel.add(new JLabel("Suche nach Note:"));
+        filterGradePanel.add(gradeFilterField);
+        filterGradePanel.add(filterCombo);
+        filterGradePanel.add(gradeFilterBtn);
 
         // Einfügen der Notenfilterung unter der Tabelle
-        topPanel.add(gradeSearchPanel, BorderLayout.SOUTH);
+        add(filterGradePanel, BorderLayout.SOUTH);
 
 
         // ActionListener für die Such-Buttons
@@ -212,11 +199,11 @@ public class ListPanel extends JPanel {
                     right = mid - 1;
                 }
             }
-        } else if ("Minimum".equals(criteria)) {
+        } else if ("Mindestens".equals(criteria)) {
             for (model.Projekt p : projects) {
                 if (p.getNote() >= value) found.add(p);
             }
-        } else if ("Maximum".equals(criteria)) {
+        } else if ("Maximal".equals(criteria)) {
             for (model.Projekt p : projects) {
                 if (p.getNote() <= value) found.add(p);
             }
