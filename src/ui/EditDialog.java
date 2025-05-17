@@ -1,5 +1,7 @@
 package ui;
 
+import datastructure.EigeneListe;
+import exception.DuplicatedNameException;
 import model.Projekt;
 import model.Student;
 
@@ -30,10 +32,18 @@ public class EditDialog extends JDialog {
     private final JTextField editStudentNameField = new JTextField(12);
     JButton editStudentBtn = new JButton("Student-Name ändern");
 
+    private final EigeneListe<Projekt> projectList;
 
-    public EditDialog(Frame parent, Projekt projekt) {
+    /**
+     * Konstruktor.
+     * @param parent übergeordneter Frame
+     * @param projekt Projekt, das bearbeitet werden soll
+     * @param projectList Liste, der das neue Projekt hinzugefügt wird | Überprüft ob name einmalig ist.
+     */
+    public EditDialog(Frame parent, Projekt projekt, EigeneListe<Projekt> projectList) {
         super(parent, "Projekt bearbeiten", true);
         this.projekt = projekt;
+        this.projectList = projectList;
         initComponents();
         pack();
         setLocationRelativeTo(parent);
@@ -246,11 +256,19 @@ public class EditDialog extends JDialog {
         String datumText = datumField.getText().trim();
         double note;
         try {
+            // Prüfen ob der Titel bereits von einem anderen Projekt vergeben ist
+            for (Projekt p : projectList) {
+                if (p != projekt && p.getTitel() != null && !p.getTitel().isEmpty() &&
+                        p.getTitel().equalsIgnoreCase(titel)) {
+                    throw new DuplicatedNameException("Der Projekttitel \"" + titel + "\" ist bereits vergeben!");
+                }
+            }
+
             projekt.setTitel(titel);
             note = Double.parseDouble(noteText);
             projekt.setNote(note);
             projekt.setAbgabeDatum(datumText);
-            // PRÜFUNG: Steht in einem Studentenfeld noch Text?
+            // PRÜFUNG: Steht in einem Studentenfeld noch Text? Und soll dieser behalten werden?
             if (!studentNameField.getText().trim().isEmpty() ||
                     !studentBirthField.getText().trim().isEmpty() ||
                     !studentMatField.getText().trim().isEmpty()) {

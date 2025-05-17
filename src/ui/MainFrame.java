@@ -121,7 +121,7 @@ public class MainFrame extends JFrame {
             JOptionPane.showMessageDialog(this, "Kein Projekt ausgewählt.", "Fehler", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        EditDialog dialog = new EditDialog(this, selected);
+        EditDialog dialog = new EditDialog(this, selected, projectList);
         dialog.setVisible(true);
         if (dialog.isConfirmed()) {
             listPanel.refresh();

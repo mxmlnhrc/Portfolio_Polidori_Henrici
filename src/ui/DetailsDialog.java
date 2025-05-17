@@ -1,5 +1,6 @@
 package ui;
 
+import datastructure.EigeneListe;
 import model.Projekt;
 import model.Student;
 
@@ -14,14 +15,17 @@ public class DetailsDialog extends JDialog {
     private boolean modified = false;
     public boolean isModified() { return modified; }
 
+    // ProjektListe um nach ggf. folgenden Änderungen die Liste mitzugeben
+    private final EigeneListe<Projekt> projectList;
     /**
      * Zeigt die Projektdetails an (read-only Ansicht).
      * @param parent Übergeordnetes Fenster
      * @param projekt Das anzuzeigende Projekt
      */
-    public DetailsDialog(Window parent, Projekt projekt, Consumer<Projekt> deleteCallback) {
+    public DetailsDialog(Window parent, Projekt projekt, Consumer<Projekt> deleteCallback, EigeneListe<Projekt> projectList) {
         super(parent, "Projekt-Details", ModalityType.APPLICATION_MODAL);
         this.projekt = projekt;
+        this.projectList = projectList;
         initComponents();
         setSize(400, 350);
         setLocationRelativeTo(parent);
@@ -87,8 +91,7 @@ public class DetailsDialog extends JDialog {
         // Listener
         closeButton.addActionListener(e -> dispose());
         editButton.addActionListener(e -> {
-            EditDialog editDialog = new EditDialog((Frame) SwingUtilities.getWindowAncestor(this), projekt);
-            editDialog.setVisible(true);
+            EditDialog editDialog = new EditDialog((Frame) SwingUtilities.getWindowAncestor(this), projekt, projectList);            editDialog.setVisible(true);
             if (editDialog.isConfirmed()) {
                 modified = true;
                 // Nach Bearbeitung Dialog schließen, damit Liste sofort neu geladen werden kann
