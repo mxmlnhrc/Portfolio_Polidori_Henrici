@@ -57,6 +57,24 @@ public class ListPanel extends JPanel {
 
         sortAsc.addActionListener(e -> sort(true));
         sortDesc.addActionListener(e -> sort(false));
+
+        /**
+         * MouseListener für Doppelklick auf die Tabelle
+         * um den DetailsDialog zu öffnen.
+         */
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    // Das ausgewählte Projekt holen:
+                    Projekt selected = getSelectedProjekt();
+                    if (selected != null) {
+                        // DetailsDialog öffnen
+                        showDetailsDialog(selected);
+                    }
+                }
+            }
+        });
     }
 
     private void sort(boolean ascending) {
@@ -92,6 +110,11 @@ public class ListPanel extends JPanel {
     public void refresh() {
         tableModel.setRowCount(0);
         for (Projekt p : projects) {
+            // Leere Felder anzeigen
+            String titel = p.getTitel() != null ? p.getTitel() : "";
+            String note = p.getNote() != 0 ? String.valueOf(p.getNote()) : "";
+            String datum = p.getAbgabeDatum() != null ? p.getAbgabeDatum() : "";
+            // Studenten zusammenfassen
             StringBuilder studenten = new StringBuilder();
             for (Student s : p.getTeilnehmer()) {
                 if (!studenten.isEmpty()) studenten.append(", ");
@@ -114,4 +137,21 @@ public class ListPanel extends JPanel {
         }
         return toList().get(row);
     }
+
+    /**
+     * Zeigt den DetailsDialog für das Projekt an.
+     * @param projekt das Projekt, dessen Details angezeigt werden sollen
+     */
+    private void showDetailsDialog(Projekt projekt) {
+        DetailsDialog dialog = new DetailsDialog(
+                SwingUtilities.getWindowAncestor(this), projekt,
+                p -> { projects.remove(p); refresh(); }
+        );
+        dialog.setVisible(true);
+        // Prüfen, ob geändert wurde und dann refresh()
+        if (dialog.isModified()) {
+            refresh();
+        }
+    }
+
 }

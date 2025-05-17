@@ -80,6 +80,14 @@ public class AddDialog extends JDialog {
         gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
         panel.add(new JScrollPane(studentListView), gbc);
 
+        // Separator
+        gbc.gridx = 0;
+        gbc.gridy = 3; // oder die nächste freie Zeile nach dem letzten Projektfeld!
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        panel.add(new JSeparator(), gbc);
+        gbc.fill = GridBagConstraints.NONE; // Zurücksetzen!
+
         // Buttons
         JPanel buttonPanel = new JPanel();
         JButton okButton = new JButton("OK");
@@ -120,6 +128,22 @@ public class AddDialog extends JDialog {
         String noteText = noteField.getText().trim();
         String datumText = datumField.getText().trim();
         double note;
+
+        // PRÜFUNG: Steht in einem Studentenfeld noch Text?
+        if (!studentNameField.getText().trim().isEmpty() ||
+                !studentBirthField.getText().trim().isEmpty() ||
+                !studentMatField.getText().trim().isEmpty()) {
+            int response = JOptionPane.showConfirmDialog(
+                    this,
+                    "Im Studenten-Eintragsfeld steht noch etwas. Soll dieser Student noch hinzugefügt werden?",
+                    "Student hinzufügen?",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if (response == JOptionPane.YES_OPTION) {
+                onAddStudent();
+            }
+        }
+
         try {
             if (titel.isEmpty()) {
                 throw new EmptyNameException();

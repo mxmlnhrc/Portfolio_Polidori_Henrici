@@ -71,6 +71,14 @@ public class MainFrame extends JFrame {
         addItem.addActionListener(e -> showAddDialog());
         menu.add(addItem);
 
+        JMenuItem emptyProjectItem = new JMenuItem("Leeres Projekt anlegen");
+        emptyProjectItem.addActionListener(e -> createEmptyProject());
+        menu.add(emptyProjectItem);
+
+        JMenuItem editItem = new JMenuItem("Bearbeiten");
+        editItem.addActionListener(e -> showEditDialog());
+        menu.add(editItem);
+
         JMenuItem deleteItem = new JMenuItem("Löschen");
         deleteItem.addActionListener(e -> showDeleteDialog());
         menu.add(deleteItem);
@@ -85,6 +93,15 @@ public class MainFrame extends JFrame {
     }
 
     /**
+     * Legt ein leeres Projekt an und fügt es der Liste hinzu.
+     */
+    private void createEmptyProject() {
+        Projekt p = new Projekt(); // komplett leer
+        projectList.add(p);
+        listPanel.refresh();
+    }
+
+    /**
      * Zeigt das Dialogfenster zum Hinzufügen neuer Projekte an.
      */
     private void showAddDialog() {
@@ -94,6 +111,23 @@ public class MainFrame extends JFrame {
             listPanel.refresh();
         }
     }
+
+    /**
+     * Zeigt das Dialogfenster zum Bearbeiten von Projekten an.
+     */
+    private void showEditDialog() {
+        Projekt selected = listPanel.getSelectedProjekt();
+        if (selected == null) {
+            JOptionPane.showMessageDialog(this, "Kein Projekt ausgewählt.", "Fehler", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        EditDialog dialog = new EditDialog(this, selected);
+        dialog.setVisible(true);
+        if (dialog.isConfirmed()) {
+            listPanel.refresh();
+        }
+    }
+
 
     /**
      * Zeigt den Passwortdialog vor dem Löschen an.
@@ -132,7 +166,8 @@ public class MainFrame extends JFrame {
         // TODO: Dependency-Injection hier konfigurieren
         SwingUtilities.invokeLater(() -> {
             // Beispiel: Projektliste und Algorithmen erstellen
-            EigeneListe<Projekt> projects = new datastructure.BinarySearchTree<>(Comparator.comparing(Projekt::getTitel));
+            EigeneListe<Projekt> projects =
+                    new datastructure.BinarySearchTree<>(Comparator.comparing(Projekt::getProjektId));
             SortAlgorithm<Projekt> merge = new algorithm.MergeSort<>();
             SortAlgorithm<Projekt> heap = new algorithm.HeapSort<>();
             DeletionPolicy<Projekt> policy = new ui.policy.PasswordDeletionPolicy();
