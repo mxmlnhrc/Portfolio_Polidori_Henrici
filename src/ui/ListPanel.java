@@ -57,6 +57,24 @@ public class ListPanel extends JPanel {
 
         sortAsc.addActionListener(e -> sort(true));
         sortDesc.addActionListener(e -> sort(false));
+
+        /**
+         * MouseListener für Doppelklick auf die Tabelle
+         * um den DetailsDialog zu öffnen.
+         */
+        table.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (e.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    // Das ausgewählte Projekt holen:
+                    Projekt selected = getSelectedProjekt();
+                    if (selected != null) {
+                        // DetailsDialog öffnen
+                        showDetailsDialog(selected);
+                    }
+                }
+            }
+        });
     }
 
     private void sort(boolean ascending) {
@@ -118,5 +136,16 @@ public class ListPanel extends JPanel {
             return null;
         }
         return toList().get(row);
+    }
+
+    /**
+     * Zeigt den DetailsDialog für das Projekt an.
+     * @param projekt das Projekt, dessen Details angezeigt werden sollen
+     */
+    private void showDetailsDialog(Projekt projekt) {
+        DetailsDialog dialog = new DetailsDialog(SwingUtilities.getWindowAncestor(this), projekt);
+        dialog.setVisible(true);
+        // Optional: Nach dem Schließen neu laden, falls sich etwas geändert hat
+        refresh();
     }
 }
