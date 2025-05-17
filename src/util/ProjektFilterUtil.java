@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.Collection;
 
 public class ProjektFilterUtil {
+
     /**
      * Gibt alle Studenten aus allen Projekten als BinarySearchTree zurück.
      * Die Studenten werden nach Matrikelnummer sortiert eingefügt.
