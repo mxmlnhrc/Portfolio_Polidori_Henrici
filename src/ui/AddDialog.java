@@ -12,6 +12,10 @@ import java.awt.event.ActionEvent;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import datastructure.BinarySearchTree;
+import model.Student;
+import java.util.Comparator;
+
 
 /**
  * Dialog zum Hinzufügen eines neuen Projekts.
@@ -22,6 +26,18 @@ public class AddDialog extends JDialog {
     private final JTextField titelField = new JTextField(20);
     private final JTextField noteField = new JTextField(5);
     private final JTextField datumField = new JTextField(10);
+
+    private final JTextField studentNameField = new JTextField(12);
+    private final JTextField studentBirthField = new JTextField(10); // yyyy-MM-dd
+    private final JTextField studentMatField = new JTextField(8);
+
+    private final DefaultListModel<String> studentListModel = new DefaultListModel<>();
+    private final JList<String> studentListView = new JList<>(studentListModel);
+
+    // Temporäre Speicherung: Alle Studenten, sortiert nach Matrikelnummer!
+    private final BinarySearchTree<Student> tempStudents =
+            new BinarySearchTree<>(Comparator.comparing(Student::getMatrikelnummer));
+
 
     /**
      * Konstruktor.
@@ -74,6 +90,44 @@ public class AddDialog extends JDialog {
         // Action listeners
         okButton.addActionListener((ActionEvent e) -> onOk(projectList));
         cancelButton.addActionListener((ActionEvent e) -> onCancel());
+
+        // Studentenfelder und Button
+        gbc.gridx = 0; gbc.gridy = 4; panel.add(new JLabel("Student Name:"), gbc);
+        gbc.gridx = 1; panel.add(studentNameField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 5; panel.add(new JLabel("Geburtsdatum (yyyy-MM-dd):"), gbc);
+        gbc.gridx = 1; panel.add(studentBirthField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 6; panel.add(new JLabel("Matrikelnummer:"), gbc);
+        gbc.gridx = 1; panel.add(studentMatField, gbc);
+
+        JButton addStudentBtn = new JButton("Student hinzufügen");
+        gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2; panel.add(addStudentBtn, gbc);
+
+        // JList zur Anzeige hinzugefügter Studenten
+        gbc.gridx = 0; gbc.gridy = 8; gbc.gridwidth = 2;
+        panel.add(new JScrollPane(studentListView), gbc);
+
+        addStudentBtn.addActionListener(e -> onAddStudent());
+
+    }
+
+    private void onAddStudent() {
+        String name = studentNameField.getText().trim();
+        String birth = studentBirthField.getText().trim();
+        String matrikel = studentMatField.getText().trim();
+        try {
+            if (name.isEmpty() || birth.isEmpty() || matrikel.isEmpty()) {
+                throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
+            }
+            LocalDate date = LocalDate.parse(birth); // Format yyyy-MM-dd
+            Student s = new Student(name, date, matrikel);
+            tempStudents.add(s);
+            studentListModel.addElement(name + " (" + matrikel + ")");
+            studentNameField.setText(""); studentBirthField.setText(""); studentMatField.setText("");
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Ungültige Eingabe: " + ex.getMessage());
+        }
     }
 
     private void onOk(EigeneListe<Projekt> projectList) {

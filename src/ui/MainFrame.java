@@ -96,7 +96,7 @@ public class MainFrame extends JFrame {
     }
 
     /**
-     * Zeigt das Passwortdialog vor dem Löschen an.
+     * Zeigt den Passwortdialog vor dem Löschen an.
      */
     private void showDeleteDialog() {
         Projekt selected = listPanel.getSelectedProjekt();

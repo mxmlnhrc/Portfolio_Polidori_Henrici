@@ -32,7 +32,7 @@ src/
 │
 ├─ datastructure/
 │  ├─ EigeneListe.java    // Interface für Liste-Implementierungen
-│  └─ SimpleLinkedList.java // konkrete Implementierung (einfache verkettete Liste)
+│  └─ BinarySearchTree.java // konkrete Implementierung (einfacher BinaryTree um Informationen zu speichern)
 │
 ├─ algorithm/
 │  ├─ SortAlgorithm.java  // Interface für Sortierstrategien
