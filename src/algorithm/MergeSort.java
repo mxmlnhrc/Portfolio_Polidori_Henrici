@@ -8,7 +8,6 @@ import java.util.List;
  * @param <T> Typ der zu sortierenden Elemente
  */
 public class MergeSort<T> implements SortAlgorithm<T> {
-
     @Override
     public void sort(List<T> list, Comparator<T> comparator) {
         if (list.size() <= 1) return;
