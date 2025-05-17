@@ -11,6 +11,9 @@ public class DetailsDialog extends JDialog {
     private final Projekt projekt;
     private final Consumer<Projekt> deleteCallback;
 
+    private boolean modified = false;
+    public boolean isModified() { return modified; }
+
     /**
      * Zeigt die Projektdetails an (read-only Ansicht).
      * @param parent Übergeordnetes Fenster
@@ -84,10 +87,15 @@ public class DetailsDialog extends JDialog {
         // Listener
         closeButton.addActionListener(e -> dispose());
         editButton.addActionListener(e -> {
-            new EditDialog((Frame) SwingUtilities.getWindowAncestor(this), projekt).setVisible(true);
-            // Nach Bearbeitung neu laden (optional)
-            dispose();
+            EditDialog editDialog = new EditDialog((Frame) SwingUtilities.getWindowAncestor(this), projekt);
+            editDialog.setVisible(true);
+            if (editDialog.isConfirmed()) {
+                modified = true;
+                // Nach Bearbeitung Dialog schließen, damit Liste sofort neu geladen werden kann
+                dispose();
+            }
         });
+
         deleteButton.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(
                     this, "Projekt wirklich löschen?", "Löschen", JOptionPane.YES_NO_OPTION);
