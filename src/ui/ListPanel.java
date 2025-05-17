@@ -4,6 +4,7 @@ import model.Projekt;
 import datastructure.EigeneListe;
 import algorithm.SortAlgorithm;
 import model.Student;
+import util.ProjektFilterUtil;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -231,6 +232,8 @@ public class ListPanel extends JPanel {
      * Zeigt nur Projekte, deren Titel den Suchbegriff enthalten.
      * (Case-Insensitive)
      */
+
+    // Perform Search und Filtermethoden sind in ListPanel, da das Umverlagern in eine extra Klasse nicht lohnt.
     private void performSearch() {
         String term = searchField.getText().trim().toLowerCase();
         tableModel.setRowCount(0); // Tabelle leeren
