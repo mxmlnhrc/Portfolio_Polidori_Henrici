@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Comparator;
+import java.util.Objects;
 
 /**
  * Hauptfenster der Portfolio-Management-Anwendung.
@@ -163,7 +164,6 @@ public class MainFrame extends JFrame {
      * Startpunkt für die Anwendung.
      */
     public static void main(String[] args) {
-        // TODO: Dependency-Injection hier konfigurieren
         SwingUtilities.invokeLater(() -> {
             // Beispiel: Projektliste und Algorithmen erstellen
             EigeneListe<Projekt> projects =
