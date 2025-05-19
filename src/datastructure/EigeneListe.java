@@ -2,6 +2,11 @@ package datastructure;
 
 import java.util.Iterator;
 
+
+/**
+ * Interface für eine eigene Liste (nur Namens technisch -> Tatsächlich BinaryTree).
+ * @param <T> Typ der Elemente in der Liste
+ */
 public interface EigeneListe<T> extends Iterable<T> {
     void add(T element); // Fügt ein Element am Ende der Liste hinzu
     boolean remove(T element); // Entfernt das erste Vorkommen eines Elements, gibt true bei Erfolg zurück

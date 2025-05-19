@@ -16,7 +16,6 @@ import java.util.List;
  * \- Heaps werden häufig als Array implementiert, wobei Kind\- und Elternbeziehungen über Indizes berechnet werden.
  * \- Typische Anwendungen sind Prioritätswarteschlangen und Sortieralgorithmen wie Heapsort.
  */
-
 public class HeapSort<T> implements SortAlgorithm<T> {
     @Override
     public void sort(List<T> list, Comparator<T> comparator) {
@@ -31,6 +30,13 @@ public class HeapSort<T> implements SortAlgorithm<T> {
         }
     }
 
+    /**
+     * Hilfsmethode, um den Heap zu erstellen.
+     * @param list Liste, die in einen Heap umgewandelt werden soll
+     * @param n Größe des Heaps
+     * @param i Index des aktuellen Knotens
+     * @param comparator Vergleichsfunktion für die Elemente
+     */
     private void heapify(List<T> list, int n, int i, Comparator<T> comparator) {
         int largest = i;
         int l = 2 * i + 1;

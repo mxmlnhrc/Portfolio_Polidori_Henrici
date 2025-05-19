@@ -12,7 +12,6 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-
 /**
  * Panel zur Anzeige und Sortierung der Projektliste.
  */
@@ -131,9 +130,9 @@ public class ListPanel extends JPanel {
 
         add(topPanel, BorderLayout.NORTH);
 
-        /**
-         * MouseListener für Doppelklick auf die Tabelle
-         * um den DetailsDialog zu öffnen.
+        /*
+          MouseListener für Doppelklick auf die Tabelle
+          um den DetailsDialog zu öffnen.
          */
         table.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
@@ -232,7 +231,6 @@ public class ListPanel extends JPanel {
      * Zeigt nur Projekte, deren Titel den Suchbegriff enthalten.
      * (Case-Insensitive)
      */
-
     // Perform Search und Filtermethoden sind in ListPanel, da das Umverlagern in eine extra Klasse nicht lohnt.
     private void performSearch() {
         String term = searchField.getText().trim().toLowerCase();
