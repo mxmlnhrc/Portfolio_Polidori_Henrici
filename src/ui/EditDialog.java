@@ -167,9 +167,10 @@ public class EditDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Der neue Name darf nicht leer sein!");
             return;
         }
-        // Matrikelnummer extrahieren wie zuvor:
+
+        // Korrigierter Regex, der die Matrikelnummer zwischen Klammern extrahiert
         String selectedValue = studentListModel.getElementAt(selectedIndex);
-        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
+        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\).*", "$1");
 
         Student toEdit = null;
         for (Student s : projekt.getTeilnehmer()) {
@@ -178,6 +179,7 @@ public class EditDialog extends JDialog {
                 break;
             }
         }
+
         if (toEdit != null) {
             try {
                 toEdit.setName(newName);
@@ -186,8 +188,6 @@ public class EditDialog extends JDialog {
             } catch (exception.EmptyNameException ex) {
                 JOptionPane.showMessageDialog(this, "Name darf nicht leer sein: " + ex.getMessage());
             }
-            updateStudentListModel();
-            editStudentNameField.setText("");
         }
     }
 
