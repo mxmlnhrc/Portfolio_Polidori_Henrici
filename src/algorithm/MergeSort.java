@@ -14,6 +14,14 @@ public class MergeSort<T> implements SortAlgorithm<T> {
         mergeSort(list, 0, list.size() - 1, comparator);
     }
 
+    /**
+     * Sortiert rekursiv einen Teil der Liste unter Verwendung des Mergesort-Algorithmus.
+     *
+     * @param list Die zu sortierende Liste.
+     * @param left Der Startindex des zu sortierenden Teils (inklusiv).
+     * @param right Der Endindex des zu sortierenden Teils (inklusiv).
+     * @param comp Der Comparator, der zum Vergleichen der Listenelemente verwendet wird.
+     */
     private void mergeSort(List<T> list, int left, int right, Comparator<T> comp) {
         if (left < right) {
             int mid = (left + right) / 2;
@@ -23,6 +31,15 @@ public class MergeSort<T> implements SortAlgorithm<T> {
         }
     }
 
+    /**
+     * Führt zwei sortierte Teilbereiche einer Liste zu einem sortierten Bereich zusammen (Merge-Schritt).
+     *
+     * @param list Die zu sortierende Liste
+     * @param left Der Startindex des ersten Teilbereichs (inklusiv)
+     * @param mid Der Endindex des ersten Teilbereichs und gleichzeitig die Grenze zum zweiten Teilbereich
+     * @param right Der Endindex des zweiten Teilbereichs (inklusiv)
+     * @param comp Der Comparator, der zum Vergleichen der Listenelemente verwendet wird
+     */
     private void merge(List<T> list, int left, int mid, int right, Comparator<T> comp) {
         int n1 = mid - left + 1;
         int n2 = right - mid;

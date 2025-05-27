@@ -86,7 +86,7 @@ Bereit, die Wahl und Funktionsweise im mündlichen Teil zu erläutern.
 * **HeapSort** (Selection)
 
   ```java
-  // HeapSort: baut ein Heap, entfernt sukzessive das Maximum und rekonstruiert das Heap
+  // BubbleSort: baut ein Heap, entfernt sukzessive das Maximum und rekonstruiert das Heap
   ```
 
 *Im Quellcode ist jeder Algorithmus mit seinem Namen kommentiert.*
