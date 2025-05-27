@@ -235,13 +235,13 @@ public class EditDialog extends JDialog {
                 throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
             }
 
-            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
-            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
-                if (s.getMatrikelnummer().equals(matrikel)) {
-                    throw new DuplicatedMatrikelnummerException(
-                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
-                }
-            }
+//            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
+//            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
+//                if (s.getMatrikelnummer().equals(matrikel)) {
+//                    throw new DuplicatedMatrikelnummerException(
+//                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
+//                }
+//            }
 
             Student s = new Student(name, birth, matrikel);
 
@@ -253,6 +253,7 @@ public class EditDialog extends JDialog {
             studentBirthField.setText("");
             studentMatField.setText("");
         } catch (Exception ex) {
+            System.err.println("Fehler beim Laden des Students: " + ex.getMessage());
             JOptionPane.showMessageDialog(this, "Ungültige Eingabe: " + ex.getMessage());
         }
     }
@@ -263,7 +264,7 @@ public class EditDialog extends JDialog {
     private void updateStudentListModel() {
         studentListModel.clear();
         for (Student s : projekt.getTeilnehmer()) {
-            studentListModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")");
+            studentListModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")" + " | Geburtstag: " + s.getBirthDate());
         }
     }
 

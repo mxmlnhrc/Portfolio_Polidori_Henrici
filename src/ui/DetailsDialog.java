@@ -73,7 +73,7 @@ public class DetailsDialog extends JDialog {
 
         DefaultListModel<String> studentenModel = new DefaultListModel<>();
         for (Student s : projekt.getTeilnehmer()) {
-            studentenModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")");
+            studentenModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")" + " | Geburtstag: " + s.getBirthDate());
         }
         JList<String> studentenList = new JList<>(studentenModel);
         studentenList.setEnabled(false);

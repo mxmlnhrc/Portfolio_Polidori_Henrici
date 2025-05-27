@@ -1,5 +1,6 @@
 package model;
 
+import exception.DuplicatedMatrikelnummerException;
 import exception.DuplicatedNameException;
 import exception.EmptyNameException;
 import exception.ValidationException;
@@ -106,12 +107,13 @@ public class Projekt {
     /**
      * Fügt einen Studenten hinzu; wirft bei Duplikaten.
      * @param student Student
-     * @throws DuplicatedNameException wenn Student bereits vorhanden ist
+     * @throws DuplicatedMatrikelnummerException wenn Student bereits vorhanden ist
      */
-    public void addStudent(Student student) throws DuplicatedNameException {
+    public void addStudent(Student student) throws DuplicatedMatrikelnummerException {
         for (Student s : teilnehmer) {
-            if (s.equals(student)) {
-                throw new DuplicatedNameException(student.getName());
+            if (s.getMatrikelnummer().equals(student.getMatrikelnummer())) {
+                throw new DuplicatedMatrikelnummerException(
+                        "Die Matrikelnummer \"" + student.getMatrikelnummer() + "\" ist bereits vergeben!");
             }
         }
         teilnehmer.add(student);
