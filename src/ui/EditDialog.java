@@ -204,7 +204,7 @@ public class EditDialog extends JDialog {
         String selectedValue = studentListModel.getElementAt(selectedIndex);
 
         // Extrahiere Matrikelnummer aus Anzeige: "Name (Matrikelnummer)"
-        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
+        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\).*", "$1");
 
         Student toRemove = null;
         for (Student s : projekt.getTeilnehmer()) {
