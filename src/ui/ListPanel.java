@@ -23,7 +23,7 @@ public class ListPanel extends JPanel {
 
     // Aktuellen Sortieralgorithmus initialisieren
     private final algorithm.SortAlgorithm<model.Projekt> mergeSort = new algorithm.MergeSort<>();
-    private final algorithm.SortAlgorithm<model.Projekt> heapSort = new algorithm.HeapSort<>();
+    private final algorithm.SortAlgorithm<model.Projekt> bubbleSort = new algorithm.BubbleSort<>();
     private algorithm.SortAlgorithm<model.Projekt> currentSort = mergeSort; // Standard
 
     // Suchfelder anlegen
@@ -40,7 +40,7 @@ public class ListPanel extends JPanel {
      * Konstruktor für das ListPanel.
      * @param projects - Liste der Projekte
      * @param mergeSort - Sortieralgorithmus für MergeSort
-     * @param heapSort - Sortieralgorithmus für HeapSort
+     * @param heapSort - Sortieralgorithmus für BubbleSort
      */
     public ListPanel(EigeneListe<Projekt> projects,
                      SortAlgorithm<Projekt> mergeSort,
@@ -75,10 +75,10 @@ public class ListPanel extends JPanel {
         add(control, BorderLayout.NORTH);
 
         // Auswahl der Sortieralgorithmen
-        JComboBox<String> algoCombo = new JComboBox<>(new String[]{"MergeSort", "HeapSort"});
+        JComboBox<String> algoCombo = new JComboBox<>(new String[]{"MergeSort", "BubbleSort"});
         algoCombo.addActionListener(e -> {
             if (algoCombo.getSelectedIndex() == 0) currentSort = mergeSort;
-            else currentSort = heapSort;
+            else currentSort = bubbleSort;
         });
 
         // Auswahl der Sortierkriterien
@@ -93,7 +93,7 @@ public class ListPanel extends JPanel {
        sortAsc.addActionListener(e -> sort(true));
        sortDesc.addActionListener(e -> sort(false));
 
-       // topPanel erstellen um Such- und Sortier-, Filter- und Suchfelder zu kombinieren
+       // topPanel erstellen um und Sortier- und Suchfelder zu kombinieren
        JPanel topPanel = new JPanel();
        topPanel.setLayout(new BorderLayout());
        topPanel.add(sortPanel, BorderLayout.NORTH);

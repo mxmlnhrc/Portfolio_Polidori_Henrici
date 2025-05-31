@@ -37,7 +37,7 @@ src/
 ├─ algorithm/
 │  ├─ SortAlgorithm.java  // Interface für Sortierstrategien
 │  ├─ MergeSort.java      // Divide-and‐Conquer, implementiert SortAlgorithm
-│  └─ HeapSort.java       // Selection‐Kategorie, implementiert SortAlgorithm
+│  └─ BubbleSort.java     // Tausch-Kategorie, implementiert SortAlgorithm
 │
 ├─ exception/
 │  ├─ EmptyNameException.java
@@ -81,12 +81,12 @@ Bereit, die Wahl und Funktionsweise im mündlichen Teil zu erläutern.
 - **MergeSort** (Divide-and-Conquer)
   ```java
   // MergeSort: teilt die Liste, sortiert Teillisten und fügt sie zusammen
+  ```
 
-
-* **HeapSort** (Selection)
+* **BubbleSort** (Tausch)
 
   ```java
-  // HeapSort: baut ein Heap, entfernt sukzessive das Maximum und rekonstruiert das Heap
+  // BubbleSort: vergleicht benachbarte Elemente und tauscht sie bei Bedarf
   ```
 
 *Im Quellcode ist jeder Algorithmus mit seinem Namen kommentiert.*
@@ -128,3 +128,4 @@ java -cp out ui.MainFrame
 ---
 ## Autoren
 Aurora Polidori & Maximilian Henrici
+

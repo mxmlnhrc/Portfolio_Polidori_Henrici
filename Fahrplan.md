@@ -54,7 +54,7 @@
 
 * [ ] `algorithm/SortAlgorithm.java` (Interface definieren)
 * [ ] `algorithm/MergeSort.java` implementieren
-* [ ] `algorithm/HeapSort.java` implementieren
+* [ ] `algorithm/BubbleSort.java` implementieren
 * [ ] Unit-Tests: Sortiere Beispiel-Listen nach Note, Datum, Name
 
 **Grobe Punkte:**

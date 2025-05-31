@@ -1,5 +1,6 @@
 package ui;
 
+import algorithm.BubbleSort;
 import model.Projekt;
 import datastructure.EigeneListe;
 import algorithm.SortAlgorithm;
@@ -10,7 +11,6 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Comparator;
-import java.util.Objects;
 
 /**
  * Hauptfenster der Portfolio-Management-Anwendung.
@@ -18,7 +18,7 @@ import java.util.Objects;
 public class MainFrame extends JFrame {
     private final EigeneListe<Projekt> projectList;
     private final SortAlgorithm<Projekt> mergeSort;
-    private final SortAlgorithm<Projekt> heapSort;
+    private final SortAlgorithm<Projekt> bubbleSort;
     private final DeletionPolicy<Projekt> deletionPolicy;
 
     private final ListPanel listPanel;
@@ -28,15 +28,15 @@ public class MainFrame extends JFrame {
      */
     public MainFrame(EigeneListe<Projekt> projectList,
                      SortAlgorithm<Projekt> mergeSort,
-                     SortAlgorithm<Projekt> heapSort,
+                     SortAlgorithm<Projekt> bubbleSort,
                      DeletionPolicy<Projekt> deletionPolicy) {
         super("Portfolio Manager");
         this.projectList = projectList;
         this.mergeSort = mergeSort;
-        this.heapSort = heapSort;
+        this.bubbleSort = bubbleSort;
         this.deletionPolicy = deletionPolicy;
 
-        this.listPanel = new ListPanel(projectList, mergeSort, heapSort);
+        this.listPanel = new ListPanel(projectList, mergeSort, bubbleSort);
         initComponents();
     }
 
@@ -129,7 +129,6 @@ public class MainFrame extends JFrame {
         }
     }
 
-
     /**
      * Zeigt den Passwortdialog vor dem Löschen an.
      */
@@ -169,7 +168,7 @@ public class MainFrame extends JFrame {
             EigeneListe<Projekt> projects =
                     new datastructure.BinarySearchTree<>(Comparator.comparing(Projekt::getProjektId));
             SortAlgorithm<Projekt> merge = new algorithm.MergeSort<>();
-            SortAlgorithm<Projekt> heap = new algorithm.HeapSort<>();
+            SortAlgorithm<Projekt> heap = new BubbleSort<>();
             DeletionPolicy<Projekt> policy = new ui.policy.PasswordDeletionPolicy();
 
             MainFrame frame = new MainFrame(projects, merge, heap, policy);

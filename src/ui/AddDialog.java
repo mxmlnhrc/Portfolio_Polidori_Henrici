@@ -130,13 +130,13 @@ public class AddDialog extends JDialog {
                 throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
             }
 
-            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
-            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
-                if (s.getMatrikelnummer().equals(matrikel)) {
-                    throw new DuplicatedMatrikelnummerException(
-                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
-                }
-            }
+//            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
+//            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
+//                if (s.getMatrikelnummer().equals(matrikel)) {
+//                    throw new DuplicatedMatrikelnummerException(
+//                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
+//                }
+//            }
 
             for (Student s : tempStudents) {
                 if (s.getMatrikelnummer().equals(matrikel)) {
@@ -208,7 +208,7 @@ public class AddDialog extends JDialog {
             projectList.add(projekt);
             confirmed = true;
             dispose();
-        } catch (DuplicatedNameException ex) {
+        } catch (DuplicatedNameException | DuplicatedMatrikelnummerException ex) {
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Fehler", JOptionPane.ERROR_MESSAGE);
         } catch (EmptyNameException ex) {
             JOptionPane.showMessageDialog(this, "Projekttitel darf nicht leer sein!", "Fehler", JOptionPane.ERROR_MESSAGE);

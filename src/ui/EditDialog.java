@@ -167,9 +167,10 @@ public class EditDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Der neue Name darf nicht leer sein!");
             return;
         }
-        // Matrikelnummer extrahieren wie zuvor:
+
+        // Korrigierter Regex, der die Matrikelnummer zwischen Klammern extrahiert
         String selectedValue = studentListModel.getElementAt(selectedIndex);
-        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
+        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\).*", "$1");
 
         Student toEdit = null;
         for (Student s : projekt.getTeilnehmer()) {
@@ -178,6 +179,7 @@ public class EditDialog extends JDialog {
                 break;
             }
         }
+
         if (toEdit != null) {
             try {
                 toEdit.setName(newName);
@@ -186,8 +188,6 @@ public class EditDialog extends JDialog {
             } catch (exception.EmptyNameException ex) {
                 JOptionPane.showMessageDialog(this, "Name darf nicht leer sein: " + ex.getMessage());
             }
-            updateStudentListModel();
-            editStudentNameField.setText("");
         }
     }
 
@@ -204,7 +204,7 @@ public class EditDialog extends JDialog {
         String selectedValue = studentListModel.getElementAt(selectedIndex);
 
         // Extrahiere Matrikelnummer aus Anzeige: "Name (Matrikelnummer)"
-        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\)$", "$1");
+        String mat = selectedValue.replaceAll(".*\\(([^)]+)\\).*", "$1");
 
         Student toRemove = null;
         for (Student s : projekt.getTeilnehmer()) {
@@ -235,13 +235,13 @@ public class EditDialog extends JDialog {
                 throw new IllegalArgumentException("Alle Felder müssen ausgefüllt sein!");
             }
 
-            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
-            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
-                if (s.getMatrikelnummer().equals(matrikel)) {
-                    throw new DuplicatedMatrikelnummerException(
-                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
-                }
-            }
+//            // Matrikelnummer-Eindeutigkeit prüfen (binär durchsuchen, da Tree nach Matrikelnummer sortiert)
+//            for (Student s : ProjektFilterUtil.getAllStudents(projectList)) {
+//                if (s.getMatrikelnummer().equals(matrikel)) {
+//                    throw new DuplicatedMatrikelnummerException(
+//                            "Die Matrikelnummer \"" + matrikel + "\" ist bereits vergeben!");
+//                }
+//            }
 
             Student s = new Student(name, birth, matrikel);
 
@@ -253,6 +253,7 @@ public class EditDialog extends JDialog {
             studentBirthField.setText("");
             studentMatField.setText("");
         } catch (Exception ex) {
+            System.err.println("Fehler beim Laden des Students: " + ex.getMessage());
             JOptionPane.showMessageDialog(this, "Ungültige Eingabe: " + ex.getMessage());
         }
     }
@@ -263,7 +264,7 @@ public class EditDialog extends JDialog {
     private void updateStudentListModel() {
         studentListModel.clear();
         for (Student s : projekt.getTeilnehmer()) {
-            studentListModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")");
+            studentListModel.addElement(s.getName() + " (" + s.getMatrikelnummer() + ")" + " | Geburtstag: " + s.getBirthDate());
         }
     }
 
